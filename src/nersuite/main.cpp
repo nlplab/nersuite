@@ -87,7 +87,7 @@ void print_usage(char exe_name[])
 	cerr << "  5. persistent mode (for tag mode) " << endl;
 	cerr << "     - if -persistent option is given, the program goes into the infinite loop "   << endl;
 	cerr << "      and it prints the EOT ('0x04') for the end of stream (e.g. end of an input " << endl; 
-	cerr << "      file stream) instead of the EOF" << endl;
+	cerr << "      file stream) instead of the EOF. (Please do not use -f nor -l option)" << endl;
 	cerr << endl;
 	cerr << "  6. input_file " << endl;
 	cerr << "    - Input file(s) can be delivered in three ways." << endl;
