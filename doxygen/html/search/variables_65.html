@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html><head><title></title>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<link rel="stylesheet" type="text/css" href="search.css"/>
+<script type="text/javascript" src="search.js"></script>
+</head>
+<body class="SRPage">
+<div id="SRIndex">
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRResult" id="SR_end">
+ <div class="SREntry">
+  <a id="Item0" onkeydown="return searchResults.Nav(event,0)" onkeypress="return searchResults.Nav(event,0)" onkeyup="return searchResults.Nav(event,0)" class="SRSymbol" href="javascript:searchResults.Toggle('SR_end')">END</a>
+  <div class="SRChildren">
+    <a id="Item0_c0" onkeydown="return searchResults.NavChild(event,0,0)" onkeypress="return searchResults.NavChild(event,0,0)" onkeyup="return searchResults.NavChild(event,0,0)" class="SRScope" href="../struct_n_e_r_1_1_c_o_l_u_m_n___i_n_f_o.html#afee59ebfa6cf8c3169fe6b91bdf72d11" target="_parent">NER::COLUMN_INFO::END()</a>
+    <a id="Item0_c1" onkeydown="return searchResults.NavChild(event,0,1)" onkeypress="return searchResults.NavChild(event,0,1)" onkeyup="return searchResults.NavChild(event,0,1)" class="SRScope" href="../struct_n_e_r_1_1_n_e.html#ab022b4a11404467774d36c4f1a0496fa" target="_parent">NER::NE::end()</a>
+  </div>
+ </div>
+</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+<script type="text/javascript"><!--
+document.getElementById("Loading").style.display="none";
+document.getElementById("NoMatches").style.display="none";
+var searchResults = new SearchResults("searchResults");
+searchResults.Search();
+--></script>
+</div>
+</body>
+</html>

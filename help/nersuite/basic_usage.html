@@ -1,0 +1,579 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <meta name="author" content="Tsujii Laboratory" lang="en" />
+    <meta name="Copyright" content="� 2007 Tsujii Laboratory" />
+    <meta name="Keywords" content="Tsujii,Laboratory" lang="en" />
+    <meta name="Description" content="Tsujii Laboratory" lang="en" />
+    <meta name="Rating" content="General" />
+    <meta name="Robots" content="INDEX,FOLLOW" />
+    <meta name="Revisit-after" content="7" />
+    <meta name="Distribution" content="Global" />
+    <link href="css/default.css" rel="stylesheet" type="text/css" />
+    <title>NERsuite - a Named Entity Recognition toolkit </title>
+    <link href="css/index.css" rel="stylesheet" type="text/css" />
+</head>
+<body class="en" id="home">
+    <div id="frame">
+        <div id="content">
+            <div id="maincol">
+                <div>
+                    <center>
+                        <h1>
+                            NERsuite</h1>
+                    </center>
+                </div>
+                <div>
+                    <center>
+                        <h3>
+                            <i>A Named Entity Recognition toolkit</i>
+                        </h3>
+                    </center>
+                </div>
+                <div id="maindiv">
+                    <div>
+                        <h2 id="H1">
+                            Basic Usage</h2>
+                        <p>
+                            NERsuite is a composite system of co-operative commands. 
+                            The following figure shows the overall command structure and the pipelined stream of data which
+                            runs through the commands.
+                        </p>
+                            <img src="img/fig_01.png" alt="Overall Structure"/>
+                            <br />
+                            Fig.1 Data flow structure of NERsuite
+                        <p>
+                            The main purpose of NE tagging is to find NE chunks of high probability 
+                            with regards to the given NE model. The figure highlights this process in red arrows.
+                            In this page, we explain how to label a new input text with a pre-trained NER model.
+                            For training and using a new model, as well as for using external dictionary, 
+                            please refer to the <a href="http://www-tsujii.is.s.u-tokyo.ac.jp/NERsuite/advanced_usage.html">
+                            Advanced Usage</a> page. 
+                        </p>
+                        <h2 id="welcome">
+                            Tagging a New Input with a Pre-trained Model</h2>
+                        <p>
+                            We assume that&nbsp; NERsuite is installed and a proper
+                            pre-trained NER model is downloaded. In the following examples, we assume that the
+                            current working directory is <b><i>[nersuite]/sample/</i></b>.
+                        </p>
+                        <h3>
+                            Tokenizing a plain text</h3>
+                        <p>
+                            First, you need to prepare a text file to label. This is done by the <strong>Tokenizer</strong>
+                            command, namely, <a href="command_reference.html#nersuite_tokenizer">&quot;nersuite_tokenizer&quot;</a>. An input file must have one sentence
+                            per line. As a simple test, you can use <b><i>test.txt</i></b> file in the <b><i>sample</i></b>
+                            directory of the NERsuite source package. If you unzip the package under your home
+                            directory, the file will be placed at <b><i>[nersuite]/sample/test.txt</i></b>.
+                        </p>
+                        <p>
+                            With an input file to label, you can run Tokenizer as follows.&nbsp;
+                        </p>
+                        <div style="background-color: black; color: #FFFFFF">
+                            $ nersuite_tokenizer &lt; test.txt &gt; test.tok
+                            <br />
+                            $ cat test.tok
+                            <br />
+                            <table cellpadding="2" cellspacing="5">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            8
+                                        </td>
+                                        <td>
+                                            10
+                                        </td>
+                                        <td>
+                                            of
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            11
+                                        </td>
+                                        <td>
+                                            14
+                                        </td>
+                                        <td>
+                                            ZAP
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            14
+                                        </td>
+                                        <td>
+                                            15
+                                        </td>
+                                        <td>
+                                            -
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            15
+                                        </td>
+                                        <td>
+                                            17
+                                        </td>
+                                        <td>
+                                            70
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            18
+                                        </td>
+                                        <td>
+                                            20
+                                        </td>
+                                        <td>
+                                            to
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p>
+                            The output consists of three columns; the beginning position of a token, the past
+                            the end position of a token, and the token itself. Columns are tab-separated.<br>
+                        </p>
+                        <br />
+                        <h3>
+                            Adding Lemma Labels to the tokens</h3>
+                        <p>
+                            The <strong>GENIA tagger</strong>, <a href="command_reference.html#nersuite_gtagger">"nersuite_gtagger"</a>, which is accompanied with the NERsuite package,
+                            performs lemmatization, POS-tagging and chunking. The output file of the Tokenizer
+                            will be used as an input to the GENIA tagger. To run the GENIA tagger, you need
+                            to use <b><i>-d option</i></b> to specify the directory where the <strong>GENIA tagger
+                                model files</strong> are stored. In the following example of running the GENIA
+                            tagger, we assume that you downloaded <a href="http://www-tsujii.is.s.u-tokyo.ac.jp/NERsuite/download_files/models.gtagger.tgz">
+                                the zipped file of the GENIA tagger models</a> in your home directory and unzipped
+                            it. Then the model files will be extracted into the <b><i>~/models/gtagger/</i></b>
+                            directory.
+                        </p>
+                        <br />
+                        <div style="background-color: black; color: #FFFFFF">
+                            $ nersuite_gtagger -d ~/models/gtagger &lt; test.tok &gt; test.gtag
+                            <br>
+                            Loading morphdic...done.
+                            <br>
+                            Loading pos_models................done.
+                            <br>
+                            Loading chunk_models....done.
+                            <br>
+                            <br>
+                            $ cat test.gtag
+                            <br>
+                            <table cellpadding="2" cellspacing="5">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            8
+                                        </td>
+                                        <td>
+                                            10
+                                        </td>
+                                        <td>
+                                            of
+                                        </td>
+                                        <td>
+                                            of
+                                        </td>
+                                        <td>
+                                            IN
+                                        </td>
+                                        <td>
+                                            B-PP
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            11
+                                        </td>
+                                        <td>
+                                            14
+                                        </td>
+                                        <td>
+                                            ZAP
+                                        </td>
+                                        <td>
+                                            ZAP
+                                        </td>
+                                        <td>
+                                            NN
+                                        </td>
+                                        <td>
+                                            B-NP
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            14
+                                        </td>
+                                        <td>
+                                            15
+                                        </td>
+                                        <td>
+                                            -
+                                        </td>
+                                        <td>
+                                            -
+                                        </td>
+                                        <td>
+                                            HYPH
+                                        </td>
+                                        <td>
+                                            O
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            15
+                                        </td>
+                                        <td>
+                                            17
+                                        </td>
+                                        <td>
+                                            70
+                                        </td>
+                                        <td>
+                                            70
+                                        </td>
+                                        <td>
+                                            CD
+                                        </td>
+                                        <td>
+                                            B-NP
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            18
+                                        </td>
+                                        <td>
+                                            20
+                                        </td>
+                                        <td>
+                                            to
+                                        </td>
+                                        <td>
+                                            to
+                                        </td>
+                                        <td>
+                                            TO
+                                        </td>
+                                        <td>
+                                            B-PP
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <br />
+                        <h3>
+                            Tagging the tokens</h3>
+                        <p>
+                            Lastly, the NERsuite main command <a href=command_reference.html#nersuite">&quot;nersuite&quot;</a> labels the input text,
+                            which the GENIA tagger produced, with a pre-trained<strong> NER model</strong>.
+                            To run the command in tagging mode, use <i><b>tag</b></i> option and specify the
+                            model file as the command line&#39;s first argument. In this example, we assume
+                            that you downloaded <a href="http://www-tsujii.is.s.u-tokyo.ac.jp/NERsuite/download_files/model.bc2gm.iob2.no_dic.tgz">
+                            a BioCreative 2 modell</a> in your home directory and unzipped it, so that you
+                            get the model file stored at <b><i>~/models/bc2gm/bc2gm.iob2.no_dic.mm</i></b>.
+                        </p>
+                        <br />
+                        <div style="background-color: black; color: #FFFFFF">
+                            $ nersuite tag 
+                            -m ~/models/bc2gm/bc2gm.iob2.no_dic.m &lt; test.gtag &gt; test.ner
+                            <br>
+                            <br>
+                            $ cat test.ner
+                            <br>
+                            <table cellpadding="2" cellspacing="5">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            8
+                                        </td>
+                                        <td>
+                                            10
+                                        </td>
+                                        <td>
+                                            of
+                                        </td>
+                                        <td>
+                                            of
+                                        </td>
+                                        <td>
+                                            IN
+                                        </td>
+                                        <td>
+                                            B-PP
+                                        </td>
+                                        <td>
+                                            O
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            11
+                                        </td>
+                                        <td>
+                                            14
+                                        </td>
+                                        <td>
+                                            ZAP
+                                        </td>
+                                        <td>
+                                            ZAP
+                                        </td>
+                                        <td>
+                                            NN
+                                        </td>
+                                        <td>
+                                            B-NP
+                                        </td>
+                                        <td>
+                                            B-gene
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            14
+                                        </td>
+                                        <td>
+                                            15
+                                        </td>
+                                        <td>
+                                            -
+                                        </td>
+                                        <td>
+                                            -
+                                        </td>
+                                        <td>
+                                            HYPH
+                                        </td>
+                                        <td>
+                                            O
+                                        </td>
+                                        <td>
+                                            I-gene
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            15
+                                        </td>
+                                        <td>
+                                            17
+                                        </td>
+                                        <td>
+                                            70
+                                        </td>
+                                        <td>
+                                            70
+                                        </td>
+                                        <td>
+                                            CD
+                                        </td>
+                                        <td>
+                                            B-NP
+                                        </td>
+                                        <td>
+                                            I-gene
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            18
+                                        </td>
+                                        <td>
+                                            20
+                                        </td>
+                                        <td>
+                                            to
+                                        </td>
+                                        <td>
+                                            to
+                                        </td>
+                                        <td>
+                                            TO
+                                        </td>
+                                        <td>
+                                            B-PP
+                                        </td>
+                                        <td>
+                                            O
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <br />
+                        <h3>
+                            Pipelined Execution</h3>
+                        <p>
+                            The commands of NERSuite are all designed to enable for inputs and outputs to be
+                            combined with the pipeline mechanism of operating systems. For example, you can
+                            run these three steps (explained above) with the following single command line.
+                        </p>
+                        <br />
+                        <div style="background-color: black; color: #FFFFFF">
+                            <br>
+                            $ nersuite_tokenizer &lt; test.txt | nersuite_gtagger -d ~/models/gtagger/ | nersuite
+                            tag&nbsp;-m&nbsp; ~/models/bc2gm/bc2gm.iob2.no_dic.m &gt; test.ner
+                            <br />
+                            <br />
+                        </div>
+                        <br>
+                    </div>
+                </div>
+            </div>
+            <div id="subcol">
+                <div id="menu">
+                    <div>
+                        &nbsp;
+                    </div>
+                    <div>
+                        &nbsp;
+                    </div>
+                    <div>
+                        &nbsp;
+                    </div>
+                    <div>
+                        &nbsp;
+                    </div>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="index.html#News">What's New</a></li>
+                        <li><a href="download.html">Download</a> </li>
+                        <li><a href="installation_guide.html">Installation Guide</a> </li>
+                        <li class="selected"><a href="basic_usage.html">Basic Usage</a> </li>
+                        <li><a href="advanced_usage.html">Advanced Usage</a> </li>
+                        <li><a href="command_reference.html">Command Reference</a> </li>
+                        <li><a href="faqs.html">FAQs</a> </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div id="footer">
+            <div id="footer1">
+                � Tsujii Laboratory, Department of Information Science, The University of Tokyo</div>
+            <div id="footer2">
+                Dept. of Science Bldg. 7, Tokyo University, 7-3-1 Hongo, Bunkyo-ku, 113-0033 Tokyo
+                Japan</div>
+        </div>
+    </div>
+</body>
+</html>

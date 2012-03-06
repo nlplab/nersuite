@@ -1,0 +1,384 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <meta name="author" content="Tsujii Laboratory" lang="en">
+  <meta name="Copyright" content="� 2007 Tsujii Laboratory">
+  <meta name="Keywords" content="Tsujii,Laboratory" lang="en">
+  <meta name="Description" content="Tsujii Laboratory" lang="en">
+  <meta name="Rating" content="General">
+  <meta name="Robots" content="INDEX,FOLLOW">
+  <meta name="Revisit-after" content="7">
+  <meta name="Distribution" content="Global">
+  <link href="css/default.css" rel="stylesheet" type="text/css">
+
+  <title> NERsuite - a Named Entity Recognition toolkit </title>
+
+  <link href="css/index.css" rel="stylesheet" type="text/css">
+</head>
+
+<body class="en" id="home">
+<div id="frame">
+  <div id="content">
+    <div id="maincol">
+      <div> <center> <h1>NERsuite</h1> </center> </div>
+      <div> <center> <h3><i>A Named Entity Recognition toolkit</i> </h3> </center> </div>
+      <div id="maindiv">
+        <div>
+          <h2 id="welcome">Training a New Model</h2>
+      <p> For training a new model, you first need to prepare a training data. The training data consists of 
+          at least seven columns:</p>
+      <ul>
+            <li>correct NE label</li>
+            <li>the beginning position of a token</li>
+            <li>the past-the-end position of a token</li>
+            <li>token</li>
+            <li>lemma</li>
+            <li>POS-feature</li>
+            <li>chunk-feature</li>
+            <li>Dictionary-features (optional)</li>
+        </ul>
+      <p> The first column gives the correct label for the feature set. Please notice 
+          that this column does not exist when data is used to be <em>tagged</em> (as explained 
+          in the <a href="basic_usage.html">Basic Usage</a> page).</p>
+            <p> Among the input features, the Dictionary-features are explained later in this 
+                page. We do not take these features in this section, so the number of columns is 
+                exactly seven.</p>
+            <p> The following example shows a part of the training data for GGP (gene-or-gene-product) annotation.
+      </p>
+          <br />
+
+          <div style="background-color:black;color:#FFFFFF">
+            $ less tr_data.ggp.iob2 <br>
+            <table cellpadding="2" cellspacing="5"> 
+            <tbody><tr> <td>...</td>	  <td>...</td>  <td>...</td> <td>...</td> 	  <td>...</td> 		<td>...</td>   <td>...</td>  </tr>
+        <tr> <td>O</td>   	  <td>60</td>   <td>62</td>  <td>by</td>  	  <td>by</td>  		<td>IN</td>    <td>B-PP</td> </tr>
+        <tr> <td>B-GGP</td>   <td>63</td>   <td>74</td>  <td>interleukin</td> <td>interleukin</td>  <td>NN</td>    <td>B-NP</td> </tr>
+        <tr> <td>I-GGP</td>   <td>74</td>   <td>75</td>  <td>-</td>  	  <td>-</td>  	 	<td>HYPH</td>  <td>B-NP</td> </tr>
+        <tr> <td>I-GGP</td>   <td>75</td>   <td>80</td>  <td>1beta</td> 	  <td>1beta</td>  	<td>NN</td>    <td>I-NP</td> </tr>
+        <tr> <td>O</td>   	  <td>81</td>   <td>89</td>  <td>requires</td>    <td>require</td>  	<td>VBZ</td>   <td>B-VP</td> </tr>
+        <tr> <td>...</td>	  <td>...</td>  <td>...</td> <td>...</td> 	  <td>...</td> 		<td>...</td>   <td>...</td>  </tr>
+        </tbody></table>
+          </div> 
+      <br />
+
+      <p> With the training data ready, you can use NERsuite main command <a href="command_reference.html#nersuite">&quot;nersuite&quot;</a> 
+          to obtain a new NE Model. To run it in training mode, use the <b><i>learn</i></b>
+ option and specify the model file name to be stored.
+            </p>
+
+      <br />
+          <div style="background-color:black;color:#FFFFFF">
+            $ nersuite learn ggp.iob2.no_dic.m &lt; tr_data.ggp.iob2 <br />
+        <br />
+        Start feature extractionStart time of the training: 2010-07-19T11:03:41Z <br />
+        Reading the training data <br />
+        ....... <br />
+      </div>
+      <br>
+
+            <p> Internally, this command calls CRFsuite API function 
+          CRFSuite::Trainer::train(). You can pass some options to CRFsuite.&nbsp; Please 
+          refer to <a href="command_reference.html#nersuite">Command Reference</a> for details.</p>
+
+        </div>
+
+        <div>
+            <h2 id="H2">Dictionary Features</h2>
+                <p>
+                    As mentioned earlier in this page, you can use extra features which are 
+                    looked up from technical term dictionaries in order to improve the performance 
+                    of your model.
+
+                </p>
+                <p>
+                    The dictionary must be a text file, each line of which consists of the following 
+                    tab-separated columns:</p>
+      <ul>
+            <li>surface form of an entry word (can be a compound word)</li>
+            <li>class1 for the word</li>
+            <li>class2 for the word</li>
+            <li>...</li>
+            <li>class-n for the word</li>
+        </ul>
+            <p>
+                Two-step process is necessary to use dictionary features: <em>compiling</em> and <em>tagging</em>.</p>
+
+            <h3>Compiling Dictionary</h3>
+            <p>You must compile the text dictionary to a binary key-value-pair format. This is 
+                done by the NERsuite command <a href="command_reference.html#nersuite_dic_compiler">&quot;nersuite_dic_compiler&quot;</a>. It reads the text 
+                dictionary, creates a class list, preprocesses the surface form and records the 
+                hash mapping from surface forms to classes. (The details of preprocessing -- <em>normalization</em> -- are described in the next section.)</p>
+
+      <p> The following shows a simple example of dictionary compiling command. 
+            </p>
+
+          <div style="background-color:black;color:#FFFFFF">
+            $ 
+              nersuite_dic_compiler entrez_6_7_col.with_class.txt entrez.cdbpp<br />
+        <br>
+        ....... 
+      </div>
+            <p>Although you can choose arbitrary file extension for the binary dictionary,&nbsp; 
+                it is recommended to use &quot;.cdbpp&quot; as shown here. (&quot;cdbpp&quot; is the name of 
+                database used internally.)</p>
+                <br />
+            <h3>Dictionary Feature Tagging</h3>
+            <p>Once you get a dictionary compiled, you can use it to add features to both 
+                training and tagging input files. The command <a href="command_reference.html#nersuite_dic_tagger">&quot;nersuite_dic_tagger&quot;</a> does the 
+                job.</p>
+                        <div style="background-color: black; color: #FFFFFF">
+                            $ nersuite_dic_tagger 
+                            entrez.cdbpp &lt; test.tok &gt; test.dtag
+                            <br>
+                            <br>
+                            
+                            $ cat test.dtag
+                            <br>
+                            <table cellpadding="2" cellspacing="5">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            21
+                                        </td>
+                                        <td>
+                                            28
+                                        </td>
+                                        <td>
+                                            between
+                                        </td>
+                                        <td>
+                                            between
+                                        </td>
+                                        <td>
+                                            IN
+                                        </td>
+                                        <td>
+                                            B-PP
+                                        </td>
+                                        <td>
+                                            O
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            29
+                                        </td>
+                                        <td>
+                                            32
+                                        </td>
+                                        <td>
+                                            the
+                                        </td>
+                                        <td>
+                                            the
+                                        </td>
+                                        <td>
+                                            DT
+                                        </td>
+                                        <td>
+                                            B-NP
+                                        </td>
+                                        <td>
+                                            O</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            33
+                                        </td>
+                                        <td>
+                                            40</td>
+                                        <td>
+                                            adaptor
+                                        </td>
+                                        <td>
+                                            adaptor
+                                        </td>
+                                        <td>
+                                            NN</td>
+                                        <td>
+                                            I-NP
+                                        </td>
+                                        <td>
+                                            B-EntrezGene
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            41
+                                        </td>
+                                        <td>
+                                            48
+                                        </td>
+                                        <td>
+                                            protein
+                                        </td>
+                                        <td>
+                                            protein
+                                        </td>
+                                        <td>
+                                            NN
+                                        </td>
+                                        <td>
+                                            I-NP
+                                        </td>
+                                        <td>
+                                            I-EntrezGene
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            49
+                                        </td>
+                                        <td>
+                                            52
+                                        </td>
+                                        <td>
+                                            Cbl
+                                        </td>
+                                        <td>
+                                            Cbl
+                                        </td>
+                                        <td>
+                                            NN
+                                        </td>
+                                        <td>
+                                            I-NP</td>
+                                        <td>
+                                            B-EntrezGene
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            ...
+                                         </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+<p>
+                        As shown here, the additional dictionary features are appended to each end of 
+                        line in the IOB fashion. The longest sequence of tokens (i.e. rows) which matches a 
+                        dictionary entry is labeled with its classes. The first token in the sequence 
+                        receives the feature <em>&quot;B-&quot; + class_name </em>,&nbsp; and the succeeding 
+                        tokens receive the feature <em>&quot;I-&quot; + class_name</em>.&nbsp; If a token (or any 
+                        sequence containing it) does not match any dictionary entry, it is labeled with a 
+                        simple <em>&quot;O&quot;</em> feature.</p>
+                         </div>
+
+        <div>
+            <h2 id="H3">Normalization of the Dictionary Entry</h2>
+                <p>
+                NERsuite offers a flexible method to normalize and tokenize input texts. The normalization&nbsp; occurs
+                in two situations: 
+                </p>
+                <ul>
+                <li><i>When <a href="command_reference.html#nersuite_dic_compiler">nersuite_dic_compiler</a></i> parses dictionary surface string</li>
+                <li><i>When <a href="command_reference.html#nersuite_dic_tagger">nersuite_dic_tagger</a></i> looks up a string from the dictionary</li>
+                </ul>
+                <p>
+
+
+
+
+                   Both two commands have the command line option &quot;-n&quot; which controls the 
+                    normalization style. You can specify the following styles:</p>
+                    <ul>
+                    <li>"none"(default) : no normalization; texts are matched in the exact form</li>
+                    <li>"c" : case normalization; all letters are converted to small case </li>
+                    <li>"n" : number normalization; all numbers are converted to "0" </li>
+                    <li>"s" : symbol normalization; all symbols are converted to "_" </li>
+                    <li>"t" : tokenization; surface form of dictionary entries are tokenized,
+                     and each of them is treated as independent entries (all mapped to the same class set
+                     as those the original dictionary entry has)</li>
+                    </ul>
+            <p>
+                You can specify an arbitrary combination of the &quot;c&quot;, &quot;n&quot;, &quot;s&quot; and &quot;t&quot; to obtain 
+                the combined effect. For example, &quot;-n cns&quot; means to apply all of the case-, 
+                number- and symbol-normalizations.</p>
+            <p>
+                As the tokenization employs the same routine as the NERsuite uses to Tokenize 
+                plain texts, the <a href="command_reference.html#nersuite_dic_tagger"><em>nersuite_dic_tagger</em></a> command invoked with &quot;-n t&quot; 
+                option does not need to consider sequence of tokens. In this case, it only 
+                performs token-by-token matching.</p>
+            <p>
+                You must explicitly choose the same normalization method in both compiling and 
+                tagging situations. 
+                In other words, you must remember the option used to compile a dictioanry, and 
+                specify the same option when you use the dictionary with 
+                <em>nersuite_dic_tagger</em> command.</p>
+        </div>
+      </div>
+    </div>
+
+
+<div id="subcol">
+<div id="menu">
+<div> &nbsp; </div>
+<div> &nbsp; </div>
+<div> &nbsp; </div>
+<div> &nbsp; </div>
+<ul>
+  <li> <a href="index.html">Home</a></li>
+  <li> <a href="index.html#News">What's New</a></li>
+  <li> <a href="download.html">Download</a>
+  </li><li> <a href="installation_guide.html">Installation Guide</a>
+  </li><li> <a href="basic_usage.html">Basic Usage</a>
+  </li><li  class="selected"> <a href="advanced_usage.html">Advanced Usage</a>
+  </li><li> <a href="command_reference.html">Command Reference</a>
+  </li><li> <a href="faqs.html">FAQs</a>
+</li></ul>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer1">� Tsujii Laboratory, Department of Information
+Science, The University of Tokyo</div>
+<div id="footer2">Dept. of Science Bldg. 7, Tokyo University, 7-3-1
+Hongo, Bunkyo-ku, 113-0033 Tokyo Japan</div>
+</div>
+</div>
+
+
+</body></html>

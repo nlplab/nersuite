@@ -1,0 +1,403 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <meta name="author" content="Tsujii Laboratory" lang="en" />
+    <meta name="Copyright" content="� 2007 Tsujii Laboratory" />
+    <meta name="Keywords" content="Tsujii,Laboratory" lang="en" />
+    <meta name="Description" content="Tsujii Laboratory" lang="en" />
+    <meta name="Rating" content="General" />
+    <meta name="Robots" content="INDEX,FOLLOW" />
+    <meta name="Revisit-after" content="7" />
+    <meta name="Distribution" content="Global" />
+    <link href="css/default.css" rel="stylesheet" type="text/css" />
+    <title>NERsuite - a Named Entity Recognition toolkit </title>
+    <link href="css/index.css" rel="stylesheet" type="text/css" />
+</head>
+<body class="en" id="home">
+    <div id="frame">
+        <div id="content">
+            <div id="maincol">
+                <div>
+                    <center>
+                        <h1>
+                            NERsuite</h1>
+                    </center>
+                </div>
+                <div>
+                    <center>
+                        <h3>
+                            <i>A Named Entity Recognition toolkit</i>
+                        </h3>
+                    </center>
+                </div>
+                <div id="maindiv">
+                    <div>
+                        <h2 id="welcome">
+                            Introduction</h2>
+                        <p>
+                            Welcome to the homepage of NERsuite. The NERsuite is a Named Entity Recognition
+                            toolkit. It is designed as a pipe-lined system to facilitate research experiments
+                            using the various combinations of different NLP applications such as tokenizer,
+                            POS-tagger, lemmatizer and chunker.
+                        </p>
+                        <p>
+                            NERsuite is implemented in C++ and consists of three modulized programs, a tokenizer,
+                            a modified version of the GENIA tagger and a named entity recognizer. For a given
+                            sentence-per-line document file, the tokenizer split a sentence into tokens, and
+                            computes the beginning and the past the end positions of each token. The modified
+                            GENIA tagger performs POS-tagging, lemmatization and chunking. Finally, the named
+                            entity recognizer labels each token with a pre-trained or user-trained model.
+                        </p>
+                        <p>
+                            We provides the source package of the NERsuite and some pre-trained models too.
+                            You can download them in the <a href="http://www-tsujii.is.s.u-tokyo.ac.jp/NERsuite/download.html">
+                                <i>Download</i></a> page. Since the installation of the NERsuite requires libLBFGS
+                            and CRFsuite libraries, please download and install these libraries first. The detailed
+                            installation procedure is explained in the <a href="http://www-tsujii.is.s.u-tokyo.ac.jp/NERsuite/installation_guide.html">
+                                <i>Installation Guide</i></a> page.
+                        </p>
+                        <h2 id="welcome">
+                            Performance</h2>
+                        <p>
+                            The NERsuite is evaluated on two biomedical NER tasks, the BioCreative2 gene mention
+                            recognition task and the NLPBA 2004 named entity recognition task. The performance
+                            of the NERsuite for these two tasks is as follows
+                        </p>
+                        <br>
+                        <center>
+                            <table style="text-align: center;" border="1" width="400">
+                                <tbody>
+                                    <tr>
+                                        <th>
+                                            Rank
+                                        </th>
+                                        <th width="80">
+                                            Prec.
+                                        </th>
+                                        <th width="80">
+                                            Recall
+                                        </th>
+                                        <th width="80">
+                                            F1-score
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            1 (<a href="http://riejohnson.com/rie/Ando_biocreative_cr.pdf">Rie J.</a>)
+                                        </td>
+                                        <td>
+                                            88.48
+                                        </td>
+                                        <td>
+                                            85.98
+                                        </td>
+                                        <td>
+                                            87.21
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            2 (<a href="http://www.iis.sinica.edu.tw/%7Echunnan/DOWNLOADS/T111_v16.pdf">Kuo et al.</a>)
+                                        </td>
+                                        <td>
+                                            89.30
+                                        </td>
+                                        <td>
+                                            84.49
+                                        </td>
+                                        <td>
+                                            86.83
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            6
+                                        </td>
+                                        <td>
+                                            82.71
+                                        </td>
+                                        <td>
+                                            89.32
+                                        </td>
+                                        <td>
+                                            85.89
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>IOBES model</b>
+                                        </td>
+                                        <td>
+                                            88.81
+                                        </td>
+                                        <td>
+                                            82.34
+                                        </td>
+                                        <td>
+                                            85.45
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>IOB2 model</b>
+                                        </td>
+                                        <td>
+                                            88.09
+                                        </td>
+                                        <td>
+                                            82.26
+                                        </td>
+                                        <td>
+                                            85.08
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            7
+                                        </td>
+                                        <td>
+                                            86.97
+                                        </td>
+                                        <td>
+                                            82.55
+                                        </td>
+                                        <td>
+                                            84.70
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <caption>
+                                    <b>BioCreative 2 GMR task</b>
+                                </caption>
+                            </table>
+                        </center>
+                        <br>
+                        <p>
+                            The NERsuite is placed between 6th and 7th ranked BC2GM systems. Since the NERsuite
+                            achieves the performance only based on a statistical model unlike BC2GM systems,
+                            the adoptation of other techniques such as feature generation using external dictionaries
+                            and post-processing can further improve its performance.
+                        </p>
+                        <br>
+                        <center>
+                            <table style="text-align: center;" border="1" width="400">
+                                <tbody>
+                                    <tr>
+                                        <th>
+                                            Rank
+                                        </th>
+                                        <th width="80">
+                                            Prec.
+                                        </th>
+                                        <th width="80">
+                                            Recall
+                                        </th>
+                                        <th width="80">
+                                            F1-score
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            1 (<a href="http://www.aclweb.org/anthology/W/W04/W04-1219.pdf">Zho04</a>)
+                                        </td>
+                                        <td>
+                                            69.40
+                                        </td>
+                                        <td>
+                                            76.00
+                                        </td>
+                                        <td>
+                                            72.60
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>IOBES model</b>
+                                        </td>
+                                        <td>
+                                            69.95
+                                        </td>
+                                        <td>
+                                            72.41
+                                        </td>
+                                        <td>
+                                            71.16
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>IOB2 model</b>
+                                        </td>
+                                        <td>
+                                            69.82
+                                        </td>
+                                        <td>
+                                            72.39
+                                        </td>
+                                        <td>
+                                            71.08
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            2 (<a href="http://www.stanford.edu/%7Ejrfinkel/papers/bionlp.pdf">Fin04</a>)
+                                        </td>
+                                        <td>
+                                            68.60
+                                        </td>
+                                        <td>
+                                            71.60
+                                        </td>
+                                        <td>
+                                            70.10
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            3 (<a href="http://pages.cs.wisc.edu/%7Ebsettles/pub/bsettles-nlpba04.pdf">Set04</a>)
+                                        </td>
+                                        <td>
+                                            69.30
+                                        </td>
+                                        <td>
+                                            70.30
+                                        </td>
+                                        <td>
+                                            69.80
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                        <td>
+                                            ...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <caption>
+                                    <b>NLPBA 2004 NER task</b>
+                                </caption>
+                            </table>
+                        </center>
+                        <br>
+                        <p>
+                            The result is the overall F1-score in micro-average. In the NLPBA 2004 NER task,
+                            there are five types of named entities and the documents can be split into four
+                            categories depending on their publication period and the scope.
+                        </p>
+                        <h2 id="welcome">
+                            Copyrights and Licenses</h2>
+                        <p>
+                            NERsuite follows the BSD license. External libraries and applications may have different license terms
+                            and users should keep them for using the NERsuite as follows:
+
+                                <ul><a href="http://www-tsujii.is.s.u-tokyo.ac.jp/GENIA/tagger/">
+                                    GENIA tagger</a> : distributed under the <a href="geniatagger_license.html">GENIA tagger license</a>, and the <a href="http://wordnet.princeton.edu/wordnet/license/">
+                                    WORDNET license</a> (updated at 2012/03/03)
+                                </ul>
+                                <ul><a href="http://www.chokkan.org/software/liblbfgs/">
+                                    libLBFGS</a> : distributed under the <a href="http://opensource.org/licenses/mit-license.php">
+                                    MIT license</a> (updated at 2012/03/03)
+                                </ul>
+                                <ul><a href="http://www.chokkan.org/software/crfsuite/">
+                                    CRFsuite</a> : distributed under the <a href="http://www.opensource.org/licenses/bsd-license.php">
+                                    modified BSD license</a> (updated at 2012/03/03)
+                                </ul>
+                        </p>
+                        <h2 id="welcome">
+                            Contact</h2>
+                        <p>
+                            If you have any troubles using the NERsute or find bugs, please send me an e-mail
+                            (priancho@gmail.com).
+                        </p>
+                        <div class="window news">
+                            <h2>
+                                <a name="News">What's New</a></h2>
+                            <dl>
+                                <dt><span><b>July 16, 2010</b></span></dt>
+                                <dd>
+                                    <i>NERsuite</i> version 1.0 - first release
+                                </dd>
+                                <dt><span><b>March 3, 2012</b></span></dt>
+                                <dd>
+                                    <i>NERsuite</i> version 1.2 - an overhaul on the NERsuite. dictionary features are added. 
+                                </dd>
+                            </dl>
+                            <br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="subcol">
+                <div id="menu">
+                    <div>
+                        &nbsp;
+                    </div>
+                    <div>
+                        &nbsp;
+                    </div>
+                    <div>
+                        &nbsp;
+                    </div>
+                    <div>
+                        &nbsp;
+                    </div>
+                    <ul>
+                        <li class="selected"><a href="index.html">Home</a></li>
+                        <li><a href="index.html#News">What's New</a></li>
+                        <li><a href="download.html">Download</a> </li>
+                        <li><a href="installation_guide.html">Installation Guide</a> </li>
+                        <li><a href="basic_usage.html">Basic Usage</a> </li>
+                        <li><a href="advanced_usage.html">Advanced Usage</a> </li>
+                        <li><a href="command_reference.html">Command Reference</a> </li>
+                        <li><a href="faqs.html">FAQs</a> </li>
+                    </ul>
+                </div>
+        </div>
+        <div id="footer">
+            <div id="footer1">
+                � Tsujii Laboratory, Department of Information Science, The University of Tokyo</div>
+            <div id="footer2">
+                Dept. of Science Bldg. 7, Tokyo University, 7-3-1 Hongo, Bunkyo-ku, 113-0033 Tokyo
+                Japan</div>
+        </div>
+    </div>
+</body>
+</html>
