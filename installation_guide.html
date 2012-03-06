@@ -1,0 +1,169 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <meta name="author" content="Tsujii Laboratory" lang="en" />
+    <meta name="Copyright" content="� 2007 Tsujii Laboratory" />
+    <meta name="Keywords" content="Tsujii,Laboratory" lang="en" />
+    <meta name="Description" content="Tsujii Laboratory" lang="en" />
+    <meta name="Rating" content="General">
+    <meta name="Robots" content="INDEX,FOLLOW" />
+    <meta name="Revisit-after" content="7" />
+    <meta name="Distribution" content="Global" />
+    <link href="css/default.css" rel="stylesheet" type="text/css" />
+    <title>NERsuite - a Named Entity Recognition toolkit </title>
+    <link href="css/index.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        .code-sample
+        {
+        	background-color: black;
+        	color: #FFFFFF;
+        }
+        .style1
+        {
+            color: #00FF00;
+        }
+    </style>
+</head>
+<body class="en" id="home">
+    <div id="frame">
+        <div id="content">
+            <div id="maincol">
+                <div>
+                    <center>
+                        <h1>
+                            NERsuite</h1>
+                    </center>
+                </div>
+                <div>
+                    <center>
+                        <h3>
+                            <i>A Named Entity Recognition toolkit</i>
+                        </h3>
+                    </center>
+                </div>
+                <div id="maindiv">
+                    <div>
+                        <h2 id="welcome">
+                            Installing Libraries</h2>
+                        <p>
+                            First, install the <a href="http://www.chokkan.org/software/liblbfgs/">libLBFGS</a>
+                            library with autotools. You can specify the installation path with <b><i>--prefix=</i></b>
+                            option. Please use this option if you want to install the library into a different
+                            folder, or you do not have a super-user privilege. After the installation, add the
+                            installed library path to your <b><i>LD_LIBRARY_PATH</i></b> environment variable.
+                        </p>
+                        <br />
+                        <div class="code-sample">
+                            $ ./configure [--prefix=/the/path/to/install]
+                            <br>
+                            $ make
+                            <br />
+                            $ su<br />
+                            password:<br>
+                            # make install
+                            <br>
+                        </div>
+                        <br />
+                        <p>
+                            The installation of <a href="http://www.chokkan.org/software/crfsuite/">CRFsuite</a>
+                            can be done in a similar way. But if you did not install the libLBFGS library in
+                            the default folder, you need to use the <b><i>--with-liblbfgs=</i></b> option. We
+                            recommand to use the absolute path for this option.
+                        </p>
+                        <br />
+                        <div class="code-sample">
+                            $ ./configure [--prefix=/the/path/to/install] [--with-liblbfgs=/the/path/to/libLBFGS]
+                            <br>
+                            $ make<br />
+                            $ su
+                            <br />
+                            password:<br />
+                            # make install
+                            <br />
+                        </div>
+                        <br>
+                        <p>
+                            After the installation of the libraries is finished, you need to add the path to
+                            these libraries to the <b><i>LD_LIBRARY_PATH</i></b> environmental variable.
+                        </p>
+                        <h2 id="welcome2">
+                            Installing NERsuite</h2>
+                        <p>
+                            After two libraries are successfully installed, you can install the <a href="http://www-tsujii.is.s.u-tokyo.ac.jp/NERsuite/download_files/nersuite-1.0.tar.gz">
+                                NERsuite</a> as follows. You can specify the installation path with <b><i>--prefix=</i></b>
+                            option (by default, <em>/usr/local/bin</em>), and the library paths where libLBFGS and CRFsuite are installed with <b><i>--with-liblbfgs</i></b>
+                            and <b><i>--with-libcrfsuite</i></b> options.
+                        </p>
+                        <br />
+                        <div class="code-sample">
+                            $ ./configure [--prefix=/the/path/to/install] [--with-liblbfgs=/the/path/to/libLBFGS]
+                            [--with-libcrfsuite=/the/path/to/CRFsuite]<br>
+                            $ make
+                            <br />
+                            $ su<br />
+                            password:<br />
+                            # make install
+                            <br />
+                        </div>
+                        <br />
+                        <p>
+                            The installation of the NERsuite will produce six executable files under 
+                            the target directory (in addition to the <em>crfsuite</em> command which was 
+                            installed previously).</p>
+                        <div class="code-sample">
+                            $ ls -1 /usr/local/bin/<br />
+                            <span class="style1">
+                            crfsuite<br />
+                            nersuite<br />
+                            nersuite_correct_mp<br />
+                            nersuite_dic_compiler<br />
+                            nersuite_dic_tagger<br />
+                            nersuite_gtagger<br />
+                            nersuite_tokenizer<br />
+                            </span>
+                            $
+                            <br />
+                        </div>
+                        <br />
+                    </div>
+                </div>
+            </div>
+            <div id="subcol">
+                <div id="menu">
+                    <div>
+                        &nbsp;
+                    </div>
+                    <div>
+                        &nbsp;
+                    </div>
+                    <div>
+                        &nbsp;
+                    </div>
+                    <div>
+                        &nbsp;
+                    </div>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="index.html#News">What's New</a></li>
+                        <li><a href="download.html">Download</a> </li>
+                        <li class="selected"><a href="installation_guide.html">Installation Guide</a> </li>
+                        <li><a href="basic_usage.html">Basic Usage</a> </li>
+                        <li><a href="advanced_usage.html">Advanced Usage</a> </li>
+                        <li><a href="command_reference.html">Command Reference</a> </li>
+                        <li><a href="faqs.html">FAQs</a> </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div id="footer">
+            <div id="footer1">
+                � Tsujii Laboratory, Department of Information Science, The University of Tokyo</div>
+            <div id="footer2">
+                Dept. of Science Bldg. 7, Tokyo University, 7-3-1 Hongo, Bunkyo-ku, 113-0033 Tokyo
+                Japan</div>
+        </div>
+    </div>
+</body>
+</html>
