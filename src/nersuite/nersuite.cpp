@@ -212,12 +212,12 @@ namespace NER
 
 		// check the persistent mode (option value is empty)
 		string tmp = "";
-		bool zombie_mode = opt_parser.get_value("persistent", tmp); 
+		bool persistent_mode = opt_parser.get_value("-persistent", tmp); 
 
 		while (true) {
 			int n_words = get_sent(is, one_sent);
 			if (n_words == 0) {
-				if (zombie_mode) {          // if the nersuite tag mode is running with the nodejs_zombie option, don't quit the program
+				if (persistent_mode ) {          // if the nersuite tag mode is running with the nodejs_zombie option, don't quit the program
 					cout << "\x04";
 					cout.flush();
 					continue;

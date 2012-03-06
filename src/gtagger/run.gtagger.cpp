@@ -39,7 +39,7 @@ vector<ME_Model>    vme_chunking(16);  // genia chunking models
 // Original functions of the Genia tagger 3.0.1
 int     genia_init( const string &genia_dir );
 string  bidir_postag( const string & s, const vector<ME_Model> & vme, const vector<ME_Model> & cvme, bool dont_tokenize );
-  int     run_tagging(istream &is, ostream &os, bool dont_tokenize);
+  int     run_tagging(istream &is, ostream &os, bool persistent_mode, bool dont_tokenize);
 void    bidir_chunking( vector<Sentence> & vs, const vector<ME_Model> & vme );
 void    init_morphdic( const string &path );
 
@@ -74,11 +74,22 @@ int main(int argc, char* argv[])
     opt_value += "/";
   genia_init(opt_value);
 
-  // 2. Run POS-tagging, Lemmatization and Chunking with Genia tagger ver. 3.0.1
-  if (opt_parser.get_value("-f", opt_value)) {
+  // 2. Check persistent mode
+  string   tmp = "";
+  bool     persistent_mode = opt_parser.get_value("-persistent", tmp);
+  
+  // 3. Run POS-tagging, Lemmatization and Chunking with Genia tagger ver. 3.0.1
+  if (persistent_mode) {
+    run_tagging(cin, cout, persistent_mode, dont_tokenize);
+
+  }else if (argc == 3) {
+    run_tagging(cin, cout, false, dont_tokenize);
+  
+  }else if (opt_parser.get_value("-f", opt_value)) {
     ifstream ifs(opt_value.c_str());
-    run_tagging(ifs, cout, dont_tokenize);
+    run_tagging(ifs, cout, false, dont_tokenize);
     ifs.close();
+  
   }else if (opt_parser.get_value("-l", opt_value)) {
     string  path = "./";
 		int     idx = opt_value.find_last_of('/');
@@ -99,17 +110,14 @@ int main(int argc, char* argv[])
       if (! ifs_trg) {
         cerr << "Cannot open a target file! " << target << endl;
         return -4;
-      }
-      
+      }      
       ofstream ofs_res(result.c_str());
       
-      run_tagging(ifs_trg, ofs_res, dont_tokenize);
+      run_tagging(ifs_trg, ofs_res, false, dont_tokenize);
       ifs_trg.close();
       ofs_res.close();
     }
     ifs_lst.close();
-  }else if (argc == 3) {
-    run_tagging(cin, cout, dont_tokenize);
   }else {
     cerr << "Input must be 1) STDIN, 2) an input file name, or 3) a file name of input files." << endl;
     return -3;
@@ -119,14 +127,25 @@ int main(int argc, char* argv[])
 }
 
 // Tag input from the is stream, and output its result to the os stream.
-int run_tagging(istream &is, ostream &os, bool dont_tokenize) {
-  int        n = 1;
+int run_tagging(istream &is, ostream &os, bool persistent_mode, bool dont_tokenize) {
+  int       n = 1;
   V2_STR    one_sent;
   
-  while (get_sent(is, one_sent) != 0) {
+  while (true) {
+    int n_words = get_sent(is, one_sent);
+    if (n_words == 0) {
+      if (persistent_mode ) {          // if the nersuite tag mode is running with the nodejs_zombie option, don't quit the program
+        cout << "\x04";
+        cout.flush();
+        continue;
+      }else {                          // quit the program if no input detected
+        break;
+      }
+    }
+
     string    tok_sent = assemble_tok_sent( one_sent );
     if( tok_sent.size() > 1024 )
-        cerr << "warning: the SentenceTagger seems to be too long at line " << n << endl;
+      cerr << "warning: the SentenceTagger seems to be too long at line " << n << endl;
 
     // 2.1. Run tagging
     string    tagged = bidir_postag( tok_sent, vme, vme_chunking, dont_tokenize );
@@ -268,6 +287,7 @@ void output_usage(char *command)
     cerr << "Usage: " << command << " -d  <path/to/the/model/directory/>  [file(s)]" << endl;
     cerr << "  1. <path/to/the/model/directory/>" << endl;
     cerr << "    - Path to the directory in which the GENIA tagger models are stored " << endl;
+	cerr << endl;
     cerr << "  2. [file(s)]" << endl;
     cerr << "    - Input file(s) can be delivered in three ways." << endl;
     cerr << "      1. re-directed standard input." << endl; 
@@ -276,6 +296,12 @@ void output_usage(char *command)
     cerr << "        a file in the list file needs to have a relative path from the directory in which the list file stored." << endl;
     cerr << "    - A file consists of a beginning position, a past-the-end position and a token columns." << endl;
     cerr << "    - Each column is tab-separated." << endl;
+	cerr << endl;
+	cerr << "  3. persistent mode (for tag mode) " << endl;
+	cerr << "     - if -persistent option is given, the program goes into the infinite loop "   << endl;
+	cerr << "      and it prints the EOT ('0x04') for the end of stream (e.g. end of an input " << endl; 
+	cerr << "      file stream) instead of the EOF. (Please do not use -f nor -l option)" << endl;
+
 }
 
 
