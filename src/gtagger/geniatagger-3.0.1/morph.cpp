@@ -22,17 +22,17 @@ struct MorphDic
     cerr << "Loading morphdic...";
     string path = dir + "/noun.exc";
     LoadEx(path.c_str(), nounex);
-    path = dir + "verb.exc";
+    path = dir + "/verb.exc";
     LoadEx(path.c_str(), verbex);
-    path = dir + "adj.exc";
+    path = dir + "/adj.exc";
     LoadEx(path.c_str(), adjex);
-    path = dir + "adv.exc";
+    path = dir + "/adv.exc";
     LoadEx(path.c_str(), advex);
-    path = dir + "noun.dic";
+    path = dir + "/noun.dic";
     LoadIdx(path.c_str(), noundic);
-    path = dir + "verb.dic";
+    path = dir + "/verb.dic";
     LoadIdx(path.c_str(), verbdic);
-    path = dir + "adj.dic";
+    path = dir + "/adj.dic";
     LoadIdx(path.c_str(), adjdic);
     cerr << "done." << endl;
   }
@@ -57,6 +57,9 @@ struct MorphDic
     }
     string line;
     while (getline(ifile, line)) {
+      if ((! line.empty()) && (line[line.size()-1] == '\r')) {
+        line.resize(line.size()-1);
+	  }
       istringstream is(line);
       string org, base;
       is >> org >> base;
@@ -75,6 +78,9 @@ struct MorphDic
     }
     string line;
     while (getline(ifile, line)) {
+      if ((! line.empty()) && (line[line.size()-1] == '\r')) {
+        line.resize(line.size()-1);
+	  }
       if (line[0] == ' ') continue;
       istringstream is(line);
       string base;

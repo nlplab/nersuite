@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <iterator>
 #include <sstream>			// for faster model loading
 #include <vector>
 
@@ -519,47 +520,52 @@ ME_Model::get_features(list< pair< pair<string, string>, double> > & fl)
 bool
 ME_Model::load_from_file(const string & filename)
 {
-	ifstream				ifs(filename.c_str(), std::ios::binary);
-	std::streampos	length;
-	
+	// Read data into the local stream
+	ifstream   ifs(filename.c_str(), std::ios::binary);
+	size_t     length;
 	if (! ifs) {
-    cerr << "error: cannot open " << filename << "!" << endl;
-    return false;
-  }else {
-		ifs.seekg(0, std::ios::end);
-		length = ifs.tellg();
-		ifs.seekg(0, std::ios::beg);
+      cerr << "error: cannot open " << filename << "!" << endl;
+      return false;
+    }else {
+	  ifs.seekg(0, std::ios::end);
+	  length = ifs.tellg();
+	  ifs.seekg(0, std::ios::beg);
 	}
 
-	std::vector<char>		buffer(length);
+	std::vector<char>		buffer(length + 1);
 	ifs.read(&buffer[0], length);
+	buffer.back() = '\0';
 
-	std::stringstream		localStream;
-	localStream.rdbuf()->pubsetbuf(&buffer[0], length);
+	std::stringstream  localStream; 
+	copy(buffer.begin(), buffer.end(), std::ostream_iterator<char>(localStream, ""));
 
+	//std::stringstream		localStream;
+	//localStream.rdbuf()->pubsetbuf(&buffer[0], length);
+		
 	ifs.close();
 
 	// Load a model
 	_vl.clear();
-  _label_bag.Clear();
-  _featurename_bag.Clear();
-  _fb.Clear();
+    _label_bag.Clear();
+    _featurename_bag.Clear();
+    _fb.Clear();
 	string		line;
 	line.reserve(512);
+
 	while (std::getline(localStream, line)) {
-    string::size_type t1 = line.find_first_of('\t');
-    string::size_type t2 = line.find_last_of('\t');
+      string::size_type t1 = line.find_first_of('\t');
+      string::size_type t2 = line.find_last_of('\t');
       
-    int label = _label_bag.Put(line.substr(0, t1));
-    int feature = _featurename_bag.Put(line.substr(t1+1, t2-(t1+1)));
-    _fb.Put(ME_Feature(label, feature));
-    _vl.push_back(atof(line.substr(t2+1).c_str()));
-  }
+      int label = _label_bag.Put(line.substr(0, t1));
+      int feature = _featurename_bag.Put(line.substr(t1+1, t2-(t1+1)));
+      _fb.Put(ME_Feature(label, feature));
+      _vl.push_back(atof(line.substr(t2+1).c_str()));
+    }
     
-  _num_classes = _label_bag.Size();
+    _num_classes = _label_bag.Size();
 
-  init_feature2mef();
-
+    init_feature2mef();
+		
 	return true;
 	
 	/*
