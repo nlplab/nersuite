@@ -1,0 +1,27 @@
+/* CSS Document */
+
+
+#maindiv {
+	border-top: 1px dotted #999999;
+}
+
+
+#maindiv h2
+#welcome {
+	color: #333333;
+	font-family: Geneva, Arial, Helvetica, sans-serif;
+	font-size: 150%;
+	line-height: 1.5em;
+	letter-spacing: 0.01em;
+	margin: 5px 0 15px 5px;
+}
+
+
+#index1 {
+	padding: 0 10px 20px 0;
+	width: 440px;
+	float: left;
+	border-right: dotted 1px #999999;
+}
+
+
