@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
 		}
 		
 		if( multidoc_mode && line == multidoc_separator) {  // Check the end of document with separator
-			cout << multidoc_separator;
+			cout << multidoc_separator << "\n";
 			cout.flush();
 			continue;
 		}
