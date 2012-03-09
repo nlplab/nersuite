@@ -39,12 +39,12 @@ vector<ME_Model>    vme_chunking(16);  // genia chunking models
 // Original functions of the Genia tagger 3.0.1
 int     genia_init( const string &genia_dir );
 string  bidir_postag( const string & s, const vector<ME_Model> & vme, const vector<ME_Model> & cvme, bool dont_tokenize );
-  int     run_tagging(istream &is, ostream &os, bool persistent_mode, bool dont_tokenize);
+  int     run_tagging(istream &is, ostream &os, string multidoc_separator, bool dont_tokenize);
 void    bidir_chunking( vector<Sentence> & vs, const vector<ME_Model> & vme );
 void    init_morphdic( const string &path );
 
 // New functions for this version
-int     get_sent( istream &is, V2_STR &one_sent );
+int     get_sent( istream &is, V2_STR &one_sent, string &multidoc_separator, bool &separator_read );
 string  assemble_tok_sent( const V2_STR &one_sent );
 int     tokenize( V1_STR &one_seg, string &one_line, const string &del );
 void    output_result( V2_STR &one_sent, ostream &os );
@@ -74,20 +74,20 @@ int main(int argc, char* argv[])
     opt_value += "/";
   genia_init(opt_value);
 
-  // 2. Check persistent mode
-  string   tmp = "";
-  bool     persistent_mode = opt_parser.get_value("-persistent", tmp);
+  // 2. Check multi-document mode
+  string   multidoc_separator = "";
+  bool     multidoc_mode = opt_parser.get_value("-multidoc", multidoc_separator);
   
   // 3. Run POS-tagging, Lemmatization and Chunking with Genia tagger ver. 3.0.1
-  if (persistent_mode) {
-    run_tagging(cin, cout, persistent_mode, dont_tokenize);
+  if (multidoc_mode) {
+    run_tagging(cin, cout, multidoc_separator, dont_tokenize);
 
   }else if (argc == 3) {
-    run_tagging(cin, cout, false, dont_tokenize);
+    run_tagging(cin, cout, "", dont_tokenize);
   
   }else if (opt_parser.get_value("-f", opt_value)) {
     ifstream ifs(opt_value.c_str());
-    run_tagging(ifs, cout, false, dont_tokenize);
+    run_tagging(ifs, cout, "", dont_tokenize);
     ifs.close();
   
   }else if (opt_parser.get_value("-l", opt_value)) {
@@ -113,7 +113,7 @@ int main(int argc, char* argv[])
       }      
       ofstream ofs_res(result.c_str());
       
-      run_tagging(ifs_trg, ofs_res, false, dont_tokenize);
+      run_tagging(ifs_trg, ofs_res, "", dont_tokenize);
       ifs_trg.close();
       ofs_res.close();
     }
@@ -127,18 +127,27 @@ int main(int argc, char* argv[])
 }
 
 // Tag input from the is stream, and output its result to the os stream.
-int run_tagging(istream &is, ostream &os, bool persistent_mode, bool dont_tokenize) {
+int run_tagging(istream &is, ostream &os, string multidoc_separator, bool dont_tokenize) {
   int       n = 1;
   V2_STR    one_sent;
   
+  bool multidoc_mode = multidoc_separator != "";
+  bool separator_read;
+
   while (true) {
-    int n_words = get_sent(is, one_sent);
+    int n_words = get_sent(is, one_sent, multidoc_separator, separator_read);
     if (n_words == 0) {
-      if (persistent_mode ) {          // if the nersuite tag mode is running with the nodejs_zombie option, don't quit the program
-        cout << "\x04";
-        cout.flush();
-        continue;
-      }else {                          // quit the program if no input detected
+      if ( multidoc_mode ) {          // if the nersuite tag mode is running with the multi-document option, process doc end
+	if ( separator_read ) {       // if the multi-document separator was seen, echo it on the output
+          cout << multidoc_separator << endl;
+	  cout.flush();
+	}
+	if ( is.eof() ) {             // only quit the program on EOF
+	  break;
+	} else {
+	  continue;
+	}
+      }else {                         // quit the program if no input detected
         break;
       }
     }
@@ -207,17 +216,23 @@ int genia_init( const string &genia_dir )
 
 
 // Get a SentenceTagger into a 2D string vector container
-int get_sent( istream &is, V2_STR &one_sent )
+int get_sent( istream &is, V2_STR &one_sent, string &multidoc_separator, bool &separator_read )
 {
   int  n_lines = 0;
   string  line = "";
   V1_STR  one_row;
 
   one_sent.clear();
+  separator_read = false;
 
   while( getline( is, line ) ) {
     if( line.empty() )    // Stop when a blank line (the end of a SentenceTagger) appears
       break;
+
+    if( line == multidoc_separator ) {  // Stop when a line containing only a document separator appears
+      separator_read = true;
+      break;
+    }
 
     tokenize( one_row, line, "\t" );
     one_sent.push_back( one_row ); 
@@ -296,11 +311,11 @@ void output_usage(char *command)
     cerr << "        a file in the list file needs to have a relative path from the directory in which the list file stored." << endl;
     cerr << "    - A file consists of a beginning position, a past-the-end position and a token columns." << endl;
     cerr << "    - Each column is tab-separated." << endl;
-	cerr << endl;
-	cerr << "  3. persistent mode (for tag mode) " << endl;
-	cerr << "     - if -persistent option is given, the program goes into the infinite loop "   << endl;
-	cerr << "      and it prints the EOT ('0x04') for the end of stream (e.g. end of an input " << endl; 
-	cerr << "      file stream) instead of the EOF. (Please do not use -f nor -l option)" << endl;
+    cerr << endl;
+    cerr << "  3. multi-document mode (for tag mode) " << endl;
+    cerr << "     - if -multidoc SEP option is given, looks for lines containing only the"   << endl;
+    cerr << "       separator SEP in the input and echoes the same on output." << endl; 
+    cerr << "       (Please do not use -f nor -l option)" << endl;
 
 }
 
