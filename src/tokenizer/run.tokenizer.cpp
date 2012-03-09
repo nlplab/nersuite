@@ -15,12 +15,26 @@ using namespace NER;
 
 int main(int argc, char* argv[])
 {
-	if( argc == 2 ) {
-		string	arg2 = argv[1];
+	if( argc >= 2 ) {
+		for( int i=1; i<argc; ++i ) {
+			string arg = argv[i];
+			if( arg == "--help" ) {
+				cerr << "Usage: " << argv[0] << " < a sentence-per-line file" << endl;
+				return 0;
+			}
+		}
+	}
 
-		if( arg2 == "--help" ) {
-			cerr << "Usage: " << argv[0] << " < a sentence-per-line file" << endl;
-			return 0;
+	bool multidoc_mode = false;
+	string multidoc_separator;
+	if( argc >= 3 ) {
+		for( int j=1; j<argc-1; ++j ) {
+			string arg = argv[j];
+			string val = argv[j+1];
+			if( arg == "-multidoc" ) {
+				multidoc_mode = true;
+				multidoc_separator = val;
+			}
 		}
 	}
 
@@ -39,6 +53,12 @@ int main(int argc, char* argv[])
 				line.resize(line.size() - 1);
 			}
 		}
+		
+		if( multidoc_mode && line == multidoc_separator) {  // Check the end of document with separator
+			cout << multidoc_separator;
+			cout.flush();
+			continue;
+		}
 
 		if( tokenizer.tokenize( line, data, 0 ) == 0 )	// Ignore lines that only have spaces
 			continue;
@@ -55,7 +75,6 @@ int main(int argc, char* argv[])
 
 		++n_lines;
 	}
-
+	
 	return n_lines;
 }
-
