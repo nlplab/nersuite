@@ -13,14 +13,18 @@ namespace NER
 	{
 		v_ne.reserve(256);
 		v_idx.reserve(128);
+		document_separator_seen = false;
 	}
 
-	size_t SentenceTagger::read(istream &is)
+	size_t SentenceTagger::read(istream &is, const string &multidoc_separator)
 	{
 		m_Content.clear();		// clear the container
 
 		string				line = "";
 		vector<string>		line_items;
+
+		// reset document end marker on start
+		document_separator_seen = false;
 
 		while (true) 
 		{
@@ -28,6 +32,13 @@ namespace NER
 			if (line.empty())
 			{
 				// break if a blank line appears
+				break;
+			}
+
+			if (multidoc_separator != "" && line == multidoc_separator)
+			{
+				// mark doc end and break on document separator
+				document_separator_seen = true;
 				break;
 			}
 

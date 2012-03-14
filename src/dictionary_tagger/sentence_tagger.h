@@ -75,6 +75,8 @@ namespace NER
 
 		std::vector<int>	v_idx;
 
+		bool		document_separator_seen;
+
 	public:
 		/**
 		* Constructs a SentenceTagger object
@@ -106,6 +108,12 @@ namespace NER
 		bool	empty() const { return m_Content.empty(); }
 
 		/**
+		* Test if a document separator was seen on input.
+		* @return Returns true if a document separator was seen.
+		*/
+		bool	doc_end() const { return document_separator_seen; }
+
+		/**
 		* The begin() iterator for the internal token list
 		*/
 		V2_STR::iterator	begin() { return m_Content.begin(); }
@@ -122,9 +130,10 @@ namespace NER
 
 		/**
 		* Read a sentence from the given stream and create the internal token list.
+		* @param[in] multidoc_separator String marking document break (if non-empty)
 		* @return Size of tokens read
 		*/
-		size_t	read(std::istream &ifs);
+		size_t	read(std::istream &ifs, const std::string &multidoc_separator="");
 
 		/**
 		* Append dictionary-class features to the internal token list.

@@ -55,6 +55,9 @@ void print_usage()
 		"       cns: Case AND Number AND Symbol insensitive (convert all symbols to \'_\')\n"
 		"       t: Use token-base matching\n"
 		"\n"
+		"    -multidoc SEPARATOR : look for lines containing only the separator string\n"
+		"       SEPARATOR in input and echo the same on output.\n"
+		"\n"
 		"    Line format of the input file: \n"
 		"         [1st col.] - the byte position of the first letter of a token. \n"
 		"         [2nd col.] - the byte position one past the last letter of a token. \n"
@@ -104,6 +107,9 @@ int main(int argc, char* argv[])
 		}
 	}
 
+	string	multidoc_separator = "";
+	bool	multidoc_mode = opt_parser.get_value("-multidoc", multidoc_separator);
+
 	try
 	{
 		NER::SentenceTagger::set_normalize_type(normalize_type);
@@ -114,7 +120,8 @@ int main(int argc, char* argv[])
 		// Tag input with a dictionary
 		NER::SentenceTagger	one_sent;
 
-		while (one_sent.read(cin) != 0)
+		while ((one_sent.read(cin, multidoc_separator) != 0) ||
+		       (multidoc_mode && !cin.eof()))
 		{
 			// Find the best NE candidate at the beginning of each word in a sentence
 			one_sent.tag_nes(dict);
@@ -124,6 +131,12 @@ int main(int argc, char* argv[])
 			{
 				for_each(one_sent.begin(), one_sent.end(), print);
 				cout << endl;
+			}
+
+			// Echo seen separators if running in multi-doc mode
+			if (multidoc_mode && one_sent.doc_end())
+			{
+				cout << multidoc_separator << endl;
 			}
 		}
 	}
