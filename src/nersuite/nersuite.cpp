@@ -210,18 +210,30 @@ namespace NER
 
 		set_column_info(MODE_TAG);
 
-		// check the persistent mode (option value is empty)
-		string tmp = "";
-		bool persistent_mode = opt_parser.get_value("-persistent", tmp); 
+		// check multidoc mode
+		string multidoc_separator = "";
+		bool multidoc_mode = opt_parser.get_value("-multidoc", multidoc_separator); 
+		bool separator_read;
 
 		while (true) {
-			int n_words = get_sent(is, one_sent);
+			int n_words;
+			if (multidoc_mode) {
+				n_words = get_sent(is, one_sent, multidoc_separator, separator_read);
+			} else {
+				n_words = get_sent(is, one_sent);
+			}
 			if (n_words == 0) {
-				if (persistent_mode ) {          // if the nersuite tag mode is running with the nodejs_zombie option, don't quit the program
-					cout << "\x04";
-					cout.flush();
-					continue;
-				}else {                     // quit the program if no input detected
+				if (multidoc_mode) {            // if running with the multi-document option, process doc end
+					if ( separator_read ) { // if the multi-document separator was seen, echo it on the output
+						cout << multidoc_separator << endl;
+						cout.flush();
+					}
+					if (is.eof()) {         // only quit on EOF in multid-document mode
+						break;
+					} else {
+						continue;
+					}
+				} else {                        // quit the program if no input detected
 					break;
 				}
 			}
