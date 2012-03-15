@@ -116,8 +116,9 @@ namespace NER
 
 		int run_tagging(std::istream &is, std::ostream &os, CRFSuite::Tagger& tagger, FeatureExtractor &FExtor);
 		int tag_crfsuite(V2_STR &one_sent, V2_STR &sent_feat, CRFSuite::Tagger& tagger, std::map<std::string, int> &term_idx, std::ostream &os);
-		void output_result_standoff(std::ostream &os, CRFSuite::StringList& yseq, std::vector<std::vector<std::string> > &one_sent, std::map<std::string, int> &term_idx);
+		void output_result_standoff(std::ostream &os, CRFSuite::StringList& yseq, std::vector<std::vector<std::string> > &one_sent, std::map<std::string, int> &term_idx, bool brat_flavored=false);
 		void output_result_conll(std::ostream &os, CRFSuite::StringList& yseq, std::vector<std::vector<std::string> > &one_sent);
+		void output_single_standoff(std::ostream &os, const std::string &beg, const std::string &end, int cnt, const std::string &ne_class, const std::string &ne_text, bool brat_flavored);
 
 		void set_column_info(const std::string &mode);
 		int pad_answer(const std::string &mode, const V2_STR &one_sent, V2_STR &sent_feats);

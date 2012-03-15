@@ -81,7 +81,7 @@ void print_usage(char exe_name[])
 	cerr << "    - Default value is 1.0 " << endl;
 	cerr << endl;
 	cerr << "  4. output_format  (for tag mode) " << endl;
-	cerr << "    - 'conll' or 'standoff' format " << endl;
+	cerr << "    - 'conll' or 'standoff' or 'brat' format " << endl;
 	cerr << "    - Default value is 'conll' format " << endl;
 	cerr << endl;
 	cerr << "  5. multidoc mode (for tag mode) " << endl;

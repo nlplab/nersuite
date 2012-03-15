@@ -325,11 +325,36 @@ namespace NER
 		{
 			output_result_standoff(os, yseq, one_sent, term_idx);
 		}
+		else if (out_format == "brat")
+		{
+			output_result_standoff(os, yseq, one_sent, term_idx, true);
+		}
 		else
 		{
 			output_result_conll(os, yseq, one_sent);
 		}
 		return 1;
+	}
+
+	/**
+	* Internal output function
+	*/
+	void Suite::output_single_standoff(
+		ostream      &os,
+		const string &beg,
+		const string &end,
+		int cnt,
+		const string &ne_class,
+		const string &ne_text,
+		bool brat_flavored
+		)
+	{
+		if (!brat_flavored) {
+			os << beg << "\t" << end << "\t" << "entity_name" << "\t" << "id=\"entity-" << cnt 
+			   << "\" " << "type=\"" << ne_class << "\"" << endl;
+		}else {
+			os << "T" << cnt << "\t" << ne_class << " " << beg << " " << end << "\t" << ne_text << endl;
+		}
 	}
 
 	/**
@@ -339,7 +364,8 @@ namespace NER
 		ostream                  &os,
 		CRFSuite::StringList&    yseq,
 		vector<vector<string> >  &one_sent, 
-		map<string, int>         &term_idx  
+		map<string, int>         &term_idx,
+		bool brat_flavored
 		)
 	{
 		int                           cnt;
@@ -367,8 +393,8 @@ namespace NER
 						cnt = ++(check->second);
 					}
 
-					os << beg << "\t" << end << "\t" << "entity_name" << "\t" << "id=\"entity-" << cnt 
-						<< "\" " << "type=\"" << ne_class << "\"" << endl;
+					output_single_standoff(os, beg, end, cnt, ne_class, ne_term, brat_flavored);
+
 					ne_term = "";
 				}
 			}else if (s_label.substr(0, 1) == "B") {
@@ -380,8 +406,7 @@ namespace NER
 						cnt = ++(check->second);
 					}
 
-					os << beg << "\t" << end << "\t" << "entity_name" << "\t" << "id=\"entity-" << cnt 
-						<< "\" " << "type=\"" << ne_class << "\"" << endl;
+					output_single_standoff(os, beg, end, cnt, ne_class, ne_term, brat_flavored);
 				}
 
 				ne_term = one_sent[i][COL_INFO.WORD];
@@ -420,8 +445,7 @@ namespace NER
 			}
 
 			// fprintf(fpo, "%s\t%s\tentity_name\tid=\"entity-%d\" type=\"%s\"\n", beg.c_str(), end.c_str(), cnt, ne_class.c_str());
-			os << beg << "\t" << end << "\t" << "entity_name" << "\t" << "id=\"entity-" << cnt 
-				<< "\" " << "type=\"" << ne_class << "\"" << endl;
+			output_single_standoff(os, beg, end, cnt, ne_class, ne_term, brat_flavored);
 
 			ne_term = "";
 		}
