@@ -69,7 +69,7 @@ int main(int argc, char* argv[])
 
 void print_usage(char exe_name[])
 {
-	cerr << "Usage: " << exe_name << " <mode> <-m model_filename> [-C C2_value] [-o output_format] [-persistent] [file(s)]" << endl;
+	cerr << "Usage: " << exe_name << " <mode> <-m model_filename> [-C C2_value] [-o output_format] [-multidoc SEP] [file(s)]" << endl;
 	cerr << "  1. mode " << endl;
 	cerr << "    - 'learn' or 'tag' " << endl;
 	cerr << endl;
@@ -84,10 +84,9 @@ void print_usage(char exe_name[])
 	cerr << "    - 'conll' or 'standoff' format " << endl;
 	cerr << "    - Default value is 'conll' format " << endl;
 	cerr << endl;
-	cerr << "  5. persistent mode (for tag mode) " << endl;
-	cerr << "     - if -persistent option is given, the program goes into the infinite loop "   << endl;
-	cerr << "      and it prints the EOT ('0x04') for the end of stream (e.g. end of an input " << endl; 
-	cerr << "      file stream) instead of the EOF. (Please do not use -f nor -l option)" << endl;
+	cerr << "  5. multidoc mode (for tag mode) " << endl;
+	cerr << "     - if -multidoc SEP option is given, looks for lines containing only the "   << endl;
+	cerr << "       separator SEP in the input and echoes the same on output." << endl; 
 	cerr << endl;
 	cerr << "  6. input_file " << endl;
 	cerr << "    - Input file(s) can be delivered in three ways." << endl;
