@@ -215,6 +215,9 @@ namespace NER
 		bool multidoc_mode = opt_parser.get_value("-multidoc", multidoc_separator); 
 		bool separator_read;
 
+		// reset base offset (start of document)
+		sentence_base_offset = 0;
+
 		while (true) {
 			int n_words;
 			if (multidoc_mode) {
@@ -227,8 +230,10 @@ namespace NER
 					if ( separator_read ) { // if the multi-document separator was seen, echo it on the output
 						cout << multidoc_separator << endl;
 						cout.flush();
+						// reset base offset (start of document)
+						sentence_base_offset = 0;
 					}
-					if (is.eof()) {         // only quit on EOF in multid-document mode
+					if (is.eof()) {         // only quit on EOF in multi-document mode
 						break;
 					} else {
 						continue;
@@ -255,6 +260,9 @@ namespace NER
 
 			// 2) NER tagging
 			tag_crfsuite(one_sent, sent_feats, tagger, term_idx, os);
+
+			// Advance sentence base offset by sentence length			
+			sentence_base_offset += atoi(one_sent[n_words-1][COL_INFO.END].c_str()) + one_sent[n_words-1][COL_INFO.WORD].length();
 		}
 
 		return 0;
@@ -353,7 +361,9 @@ namespace NER
 			os << beg << "\t" << end << "\t" << "entity_name" << "\t" << "id=\"entity-" << cnt 
 			   << "\" " << "type=\"" << ne_class << "\"" << endl;
 		}else {
-			os << "T" << cnt << "\t" << ne_class << " " << beg << " " << end << "\t" << ne_text << endl;
+			int begi = atoi(beg.c_str());
+			int endi = atoi(end.c_str());
+			os << "T" << cnt << "\t" << ne_class << " " << sentence_base_offset+begi << " " << sentence_base_offset+endi << "\t" << ne_text << endl;
 		}
 	}
 
@@ -411,8 +421,8 @@ namespace NER
 
 				ne_term = one_sent[i][COL_INFO.WORD];
 				ne_class = s_label.substr(2, s_label.length() - 2);
-				beg = one_sent[i][COL_INFO.BEG].c_str();
-				end = one_sent[i][COL_INFO.END].c_str();
+				beg = one_sent[i][COL_INFO.BEG];
+				end = one_sent[i][COL_INFO.END];
 			}else if (s_label.substr(0, 1) == "I") {
 				if (ne_term != "") {
 					if ((i != 0) && (one_sent[i - 1][1] == one_sent[i][0])) {
@@ -425,8 +435,8 @@ namespace NER
 				}else {                // ***Exception) NE begins with I- label.
 					ne_term = one_sent[i][COL_INFO.WORD];
 					ne_class = s_label.substr(2, s_label.length() - 2);
-					beg = one_sent[i][COL_INFO.BEG].c_str();
-					end = one_sent[i][COL_INFO.END].c_str();
+					beg = one_sent[i][COL_INFO.BEG];
+					end = one_sent[i][COL_INFO.END];
 				}
 			}else {
 				cerr << "Can not reach here: BIO-" << endl;

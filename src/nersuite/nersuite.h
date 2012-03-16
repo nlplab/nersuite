@@ -94,6 +94,8 @@ namespace NER
 	private:
 		OPTION_PARSER opt_parser;
 		COLUMN_INFO	COL_INFO;
+		
+		int sentence_base_offset; // for brat-flavored standoff output
 
 	public:
 		/** Construct an NER Suite object
