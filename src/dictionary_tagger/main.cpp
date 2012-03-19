@@ -48,8 +48,9 @@ void print_usage()
 		"usage: nersuite_dic_tagger [options] CDB++_DB_filename < standard input \n"
 		"    Options:\n"
 		"    -n <type_of_normalization> : Normalization type for dictionary matching\n"
-		"       can be \"none\" or any combination of \"c\", \"n\", \"s\", \"t\"\n"
-		"       none (default): No normalization\n"
+		"       can be \"none\" or any combination of \"c\", \"n\", \"s\", \"t\".\n"
+		"       Defaults to normalization used when compiling DB (recommended).\n"
+		"       none: No normalization\n"
 		"       c: Case insensitive (convert all letters to lowercase)\n"
 		"       cn: Case AND Number insensitive (convert all numbers to \'0\')\n"
 		"       cns: Case AND Number AND Symbol insensitive (convert all symbols to \'_\')\n"
@@ -78,10 +79,12 @@ int main(int argc, char* argv[])
 		print_usage();
 		exit(1);
 	}
-	int		normalize_type = NER::NormalizeNone;
+	int		normalize_type = NER::NormalizationUnknown;
 	string	normalize_option;
 	if (opt_parser.get_value("-n", normalize_option))
 	{
+		normalize_type = NER::NormalizeNone;
+
 		if (normalize_option == "none")
 		{
 			// do nothing
@@ -116,6 +119,20 @@ int main(int argc, char* argv[])
 
 		NER::Dictionary dict(args[1]);
 		dict.open();
+
+		// If no normalization specified, set according to DB
+		if ( normalize_type == NER::NormalizationUnknown )
+		{
+			normalize_type = dict.get_normalization_type();
+		}
+
+		// Check for mismatch in normalization type
+		if ( dict.get_normalization_type() != NER::NormalizationUnknown &&
+		     dict.get_normalization_type() != normalize_type)
+		{
+			std::cerr << "Warning: given normalization (" << normalize_type << ") does not match DB normalization (" << dict.get_normalization_type() << "). Tagging performance may be decreased.\n";
+		}
+		
 
 		// Tag input with a dictionary
 		NER::SentenceTagger	one_sent;

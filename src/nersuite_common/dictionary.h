@@ -48,12 +48,17 @@ namespace NER
 	* @ingroup NERsuite
 	* String normalization type definitions
 	* The members of this enum are used as bit flags,
-	* combined with OR operator and produce an int value.
+	* combined with OR operator and produce an int value
+	* (excepting the special value NormalizationUnknown).
 	*/
 	enum NormalizeType
 	{
 		/** 
-		* No Normalizatoin
+		* Unknown normalization
+		*/
+		NormalizationUnknown = -1,
+		/** 
+		* No Normalization
 		*/
 		NormalizeNone = 0,
 		/**
@@ -86,6 +91,9 @@ namespace NER
 		const std::string	db_path;
 
 	private:
+		static const char *VERSION_STRING;
+
+		int db_normalization_type;
 		std::ifstream	db_ifs;
 		cdbpp::cdbpp	db_reader;
 		std::map< int, std::string > map_idx2name;
@@ -103,6 +111,10 @@ namespace NER
 		/** Open the Dictionary for reading.
 		*/
 		void open();
+
+		/** Retrieve the normalization type applied when creating the Dictionary.
+		*/
+		int get_normalization_type() { return db_normalization_type; }
 
 		/** Retrieve the array of Classes which match the provided key from the Database.
 		* @pre The Dictionary must be open before calling this function.
@@ -134,6 +146,8 @@ namespace NER
 
 	private:
 		void normalize(const std::string& form, int normalize_type, V1_STR& normalized_tokens);
+
+		void load_header_info();
 
 		void load_index_mapping();
 	};

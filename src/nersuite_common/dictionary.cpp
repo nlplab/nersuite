@@ -47,9 +47,13 @@ bool build(char* txt_dbname, char* binary_dbname);
 
 namespace NER
 {
+	const char *Dictionary::VERSION_STRING = "NERsuite dictionary (v1.1)";
+
 	Dictionary::Dictionary(const char* binary_dbname)
 		: db_path(binary_dbname)
-	{}
+	{
+		db_normalization_type = NormalizationUnknown;
+	}
 
 	Dictionary::~Dictionary()
 	{
@@ -74,6 +78,14 @@ namespace NER
 		}
 
 		try {
+			// 0.0. Write versioning information.
+			ofs.write(VERSION_STRING, strlen(VERSION_STRING));
+			ofs.put(0);
+
+			// 0.1. Write normalization type.
+			db_normalization_type = normalize_type;
+			ofs.write( reinterpret_cast<char *>( &normalize_type ), sizeof(int) );
+
 			// 1. Get a list of semantic class names
 			string		line = "";
 			V1_STR		tokens;
@@ -106,7 +118,6 @@ namespace NER
 					itr->second = (idx++);
 				}
 			}
-
 
 			// 2.1. Write header information (# of semantic classes / name to index mapping)
 			map< string, int >::size_type	max_idx = map_name2idx.size();
@@ -210,6 +221,7 @@ namespace NER
 			throw nersuite_exception("ERROR: failed to open input filestream.");
 		}
 
+		load_header_info();
 		load_index_mapping();
 
 		db_reader.open(db_ifs);
@@ -219,9 +231,33 @@ namespace NER
 		}
 	}
 
+	void Dictionary::load_header_info()
+	{
+		// 0.0. Read and confirm version information.
+
+		string db_version_string = "";
+		while (db_ifs.good())
+		{
+			char read = db_ifs.get();
+			if ( read == 0 )
+			{
+				break;
+			} else {
+				db_version_string += read;
+			}
+		}
+		if (db_version_string != VERSION_STRING)
+		{
+			throw nersuite_exception("ERROR: DB version mismatch.");
+		}
+
+		// 0.1. Read normalization type.
+		db_ifs.read( reinterpret_cast<char *>( &db_normalization_type ), sizeof(int) );
+	}
+
 	void Dictionary::load_index_mapping()
 	{
-		map< int, string >::size_type	map_size;	
+		map< int, string >::size_type	map_size;
 		db_ifs.read( reinterpret_cast<char *>( &map_size ), sizeof( map< int, string >::size_type ) );	// 1. Read # of semantic class names
 
 		pair< int, string >		pair_idx2name;
