@@ -23,20 +23,28 @@ And other collegues who willingly tested NERsuite and gave comments and advices
 
 * History
 
+
 Minor updates:
+	- Change: brat output option now uses unique IDs for entities regardless of their
+	semantic types. The IDs are also counted in document level, whereas other two 
+	options are in sentence level.
+
 	- Bug fix: a bug of the string normalization part of the dictionary compiler and 
-	tagger is fixed
-	- By Sampo Pyysalo: brat format for output is added (all entities have unique
-	IDs regardless of their semantic class)
+	tagger is fixed.
+	
+	- New function: brat format for output is added (by Sampo Pyysalo)
+
 
 Version 1.2
 	- All programs are refactored
+
 
 Version 1.1
   - Now available to use external dictionaries. Dictionay compiler and tagger are
     included. (These two programs use CDB++ library)
 
+
 Version 1.0
   - Initial release of NERsuite.
-  - Statistical model only
+  - Statistical model only.
   
