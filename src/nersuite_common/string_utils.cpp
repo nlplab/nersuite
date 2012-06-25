@@ -30,7 +30,7 @@
 */
 
 #include "string_utils.h"
-
+#include <iostream>
 
 using namespace std;
 
@@ -88,17 +88,6 @@ namespace NER
 		return str;
 	}
 
-	bool check_alphanum(const char ch)
-	{
-		if ( (('0' <= ch) && (ch <= '9')) ||
-			(('A' <= ch) && (ch <= 'Z')) ||
-			(('a' <= ch) && (ch <= 'z')) ) {
-				return true;
-		}else {
-			return false;
-		}
-	}
-
 	string make_lowercase(const string &str)
 	{
 		string str_tmp = "";
@@ -118,13 +107,17 @@ namespace NER
 
 		if (len == 0)
 			return result;
-		if (('0' <= str[0]) && (str[0] <= '9'))
+		
+		if ( isdigit(str[0]) ) {
 			result[0] = '0';
+		}else {
+			result[0] = str[0];
+		}
 
 		for (int search_pos = 1; search_pos < len; ++search_pos) {
-			if ( (str[ search_pos ] < '0') || (str[ search_pos ] > '9') ) {		// In case of alphabet character
+			if (! isdigit(str[ search_pos ]) ) {                      // Attach a character of input string if it is not a digit
 				result[ ++new_last_pos ] = str[ search_pos ];
-			}else if (str[ new_last_pos ] != '0') {										// In case of number
+			}else if ( result[ new_last_pos ] != '0') {               // Attach a '0' if a preceeding character of the squeezed string is not a digit
 				result[ ++new_last_pos ] = '0';
 			}
 		}
@@ -140,13 +133,17 @@ namespace NER
 
 		if (len == 0)
 			return result;
-		if (check_alphanum(str[0]) == false)
+
+		if (! isalnum(str[0]) ) {
 			result[0] = '_';
+		}else {
+			result[0] = str[0];
+		}
 
 		for (int search_pos = 1; search_pos < len; ++search_pos) {
-			if (check_alphanum(str[ search_pos ]) == true) { 
+			if ( isalnum(str[ search_pos ]) ) { 
 				result[ ++new_last_pos ] = str[ search_pos ];
-			}else if (str[ new_last_pos ] != '_') {
+			}else if ( result[ new_last_pos ] != '_') {
 				result[ ++new_last_pos ] = '_';
 			}
 		}
@@ -161,13 +158,17 @@ namespace NER
 
 		if (len == 0)
 			return result;
-		if ((str[0] == ' ') || (str[0] == '\t'))
+		
+		if ((str[0] == ' ') || (str[0] == '\t')) {
 			result[0] = ' ';
+		}else {
+			result[0] = str[0];
+		}
 
 		for (int search_pos = 1; search_pos < len; ++search_pos) {
-			if ( (str[ search_pos ] != ' ') && (str[ search_pos ] != '\t') ) {		// In case of non-WS
+			if ( (str[ search_pos ] != ' ') && (str[ search_pos ] != '\t') ) {    // In case of non-WS
 				result[ ++new_last_pos ] = str[ search_pos ];
-			}else if (str[ new_last_pos ] != ' ') {										// In case of WS and the last character of a new string is not WS
+			}else if (str[ new_last_pos ] != ' ') {                               // In case of WS and the last character of a new string is not WS
 				result[ ++new_last_pos ] = ' ';
 			}
 		}
