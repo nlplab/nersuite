@@ -23,6 +23,15 @@ And other collegues who willingly tested NERsuite and gave comments and advices
 
 * History
 
+Minor updates:
+	- Bug fix: a bug of the string normalization part of the dictionary compiler and 
+	tagger is fixed
+	- By Sampo Pyysalo: brat format for output is added (all entities have unique
+	IDs regardless of their semantic class)
+
+Version 1.2
+	- All programs are refactored
+
 Version 1.1
   - Now available to use external dictionaries. Dictionay compiler and tagger are
     included. (These two programs use CDB++ library)
