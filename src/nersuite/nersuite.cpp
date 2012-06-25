@@ -379,6 +379,7 @@ namespace NER
 		)
 	{
 		int                           cnt;
+		static int										cnt2 = 1;     // cnt2 counts the entity index regardless of its semantic type
 		string                        ne_term = "", ne_class = "", beg = "", end = "";
 		map<string, int>::iterator    check;
 
@@ -402,8 +403,13 @@ namespace NER
 					}else {
 						cnt = ++(check->second);
 					}
-
-					output_single_standoff(os, beg, end, cnt, ne_class, ne_term, brat_flavored);
+				
+					if (! brat_flavored) {
+						output_single_standoff(os, beg, end, cnt, ne_class, ne_term, brat_flavored);
+					}else {
+						output_single_standoff(os, beg, end, cnt2, ne_class, ne_term, brat_flavored);
+						++cnt2;
+					}
 
 					ne_term = "";
 				}
@@ -416,7 +422,12 @@ namespace NER
 						cnt = ++(check->second);
 					}
 
-					output_single_standoff(os, beg, end, cnt, ne_class, ne_term, brat_flavored);
+					if (! brat_flavored) {
+						output_single_standoff(os, beg, end, cnt, ne_class, ne_term, brat_flavored);
+					}else {
+						output_single_standoff(os, beg, end, cnt2, ne_class, ne_term, brat_flavored);
+						++cnt2;
+					}
 				}
 
 				ne_term = one_sent[i][COL_INFO.WORD];
@@ -454,8 +465,12 @@ namespace NER
 				cnt = ++(check->second);
 			}
 
-			// fprintf(fpo, "%s\t%s\tentity_name\tid=\"entity-%d\" type=\"%s\"\n", beg.c_str(), end.c_str(), cnt, ne_class.c_str());
-			output_single_standoff(os, beg, end, cnt, ne_class, ne_term, brat_flavored);
+			if (! brat_flavored) {
+				output_single_standoff(os, beg, end, cnt, ne_class, ne_term, brat_flavored);
+			}else {
+				output_single_standoff(os, beg, end, cnt2, ne_class, ne_term, brat_flavored);
+				++cnt2;
+			}
 
 			ne_term = "";
 		}
