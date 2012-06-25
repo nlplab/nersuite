@@ -378,7 +378,7 @@ namespace NER
 		bool brat_flavored
 		)
 	{
-		int                           cnt;
+		// int                           cnt;
 		static int										cnt2 = 1;     // cnt2 counts the entity index regardless of its semantic type
 		string                        ne_term = "", ne_class = "", beg = "", end = "";
 		map<string, int>::iterator    check;
@@ -397,6 +397,7 @@ namespace NER
 
 			if (s_label == "O") {
 				if (ne_term != "") {
+					/*
 					if ((check = term_idx.find(ne_class)) == term_idx.end()) {
 						term_idx.insert(pair<string,int>(ne_class, 1));
 						cnt = 1;
@@ -404,17 +405,16 @@ namespace NER
 						cnt = ++(check->second);
 					}
 				
-					if (! brat_flavored) {
-						output_single_standoff(os, beg, end, cnt, ne_class, ne_term, brat_flavored);
-					}else {
-						output_single_standoff(os, beg, end, cnt2, ne_class, ne_term, brat_flavored);
-						++cnt2;
-					}
+					output_single_standoff(os, beg, end, cnt, ne_class, ne_term, brat_flavored);
+					*/
+					output_single_standoff(os, beg, end, cnt2, ne_class, ne_term, brat_flavored);
+					++cnt2;
 
 					ne_term = "";
 				}
 			}else if (s_label.substr(0, 1) == "B") {
 				if (ne_term != "") {
+					/*
 					if ((check = term_idx.find(ne_class)) == term_idx.end()) {
 						term_idx.insert(pair<string,int>(ne_class, 1));
 						cnt = 1;
@@ -422,12 +422,10 @@ namespace NER
 						cnt = ++(check->second);
 					}
 
-					if (! brat_flavored) {
-						output_single_standoff(os, beg, end, cnt, ne_class, ne_term, brat_flavored);
-					}else {
-						output_single_standoff(os, beg, end, cnt2, ne_class, ne_term, brat_flavored);
-						++cnt2;
-					}
+					output_single_standoff(os, beg, end, cnt, ne_class, ne_term, brat_flavored);
+					*/
+					output_single_standoff(os, beg, end, cnt2, ne_class, ne_term, brat_flavored);
+					++cnt2;
 				}
 
 				ne_term = one_sent[i][COL_INFO.WORD];
@@ -458,6 +456,7 @@ namespace NER
 		}
 
 		if (ne_term != "") {      // If the last token is "B" or "I"
+			/*
 			if ((check = term_idx.find(ne_class)) == term_idx.end()) {
 				term_idx.insert(pair<string,int>(ne_class, 1));
 				cnt = 1;
@@ -465,12 +464,10 @@ namespace NER
 				cnt = ++(check->second);
 			}
 
-			if (! brat_flavored) {
-				output_single_standoff(os, beg, end, cnt, ne_class, ne_term, brat_flavored);
-			}else {
-				output_single_standoff(os, beg, end, cnt2, ne_class, ne_term, brat_flavored);
-				++cnt2;
-			}
+			output_single_standoff(os, beg, end, cnt, ne_class, ne_term, brat_flavored);
+			*/
+			output_single_standoff(os, beg, end, cnt2, ne_class, ne_term, brat_flavored);
+			++cnt2;
 
 			ne_term = "";
 		}

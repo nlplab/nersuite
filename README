@@ -25,9 +25,9 @@ And other collegues who willingly tested NERsuite and gave comments and advices
 
 
 Minor updates:
-	- Change: brat output option now uses unique IDs for entities regardless of their
-	semantic types. The IDs are also counted in document level, whereas other two 
-	options are in sentence level.
+	- Change: the standoff and brat output option now use unique IDs for entities 
+	regardless of their semantic types. The IDs are also counted in document level, 
+	whereas the conll option still counts it in sentence level.
 
 	- Bug fix: a bug of the string normalization part of the dictionary compiler and 
 	tagger is fixed.
