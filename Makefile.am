@@ -23,6 +23,7 @@ doc_DATA = README INSTALL COPYING AUTHORS ChangeLog
 #models_nersuite_DATA = 
 
 EXTRA_DIST = \
+	src/cdbpp-1.1/include/cdbpp.h
 	sample/test.txt
 #	${models_gtagger_DATA} \
 #	${models_nersuite_DATA} \

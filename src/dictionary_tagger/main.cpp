@@ -56,7 +56,7 @@ void print_usage()
 		"       cns: Case AND Number AND Symbol insensitive (convert all symbols to \'_\')\n"
 		"       t: Use token-base matching\n"
 		"\n"
-		"    -multidoc SEPARATOR : look for lines containing only the separator string\n"
+		"    -multidoc SEPARATOR : look for lines beginning with the separator string \n"
 		"       SEPARATOR in input and echo the same on output.\n"
 		"\n"
 		"    Line format of the input file: \n"
@@ -136,24 +136,32 @@ int main(int argc, char* argv[])
 
 		// Tag input with a dictionary
 		NER::SentenceTagger	one_sent;
-
-		while ((one_sent.read(cin, multidoc_separator) != 0) ||
-		       (multidoc_mode && !cin.eof()))
+		
+		while (! cin.eof()) 
 		{
-			// Find the best NE candidate at the beginning of each word in a sentence
-			one_sent.tag_nes(dict);
+			// 1. Skip if it is a blank line
+			if( one_sent.read(cin, multidoc_separator) == 0 ) {
+				continue;
+			}
+			
+			// 2. Print comment lines
+			if( multidoc_mode && one_sent.get_content_type() == 1 ) {
+				for( V2_STR::iterator irow = one_sent.begin(); irow != one_sent.end(); ++ irow) {
+					cout << irow->front() << endl;     // Comment is stored as a string at [0] position
+				}
+				cout << endl;
+				
+				continue;
+			}
+		  
+			// 3. Tag a sentence
+			one_sent.tag_nes(dict);     // Find the best NE candidate at the beginning of each word in a sentence
 
-			// Print
+			// 4. Print the output
 			if (!one_sent.empty())
 			{
 				for_each(one_sent.begin(), one_sent.end(), print);
 				cout << endl;
-			}
-
-			// Echo seen separators if running in multi-doc mode
-			if (multidoc_mode && one_sent.doc_end())
-			{
-				cout << multidoc_separator << endl;
 			}
 		}
 	}

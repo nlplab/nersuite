@@ -9,6 +9,7 @@ lib_LIBRARIES = libnersuite_common.a
 #EXTRA_DIST =
 
 libnersuite_common_a_SOURCES = \
+	nersuite_exception.h \
 	string_utils.h \
 	string_utils.cpp \
 	text_loader.h \

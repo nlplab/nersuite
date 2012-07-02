@@ -25,6 +25,7 @@
 
 
 #include "option_parser/option_parser.h"
+#include "../nersuite_common/text_loader.h"
 #include <fstream>
 
 using namespace std;
@@ -44,7 +45,7 @@ void    bidir_chunking( vector<Sentence> & vs, const vector<ME_Model> & vme );
 void    init_morphdic( const string &path );
 
 // New functions for this version
-int     get_sent( istream &is, V2_STR &one_sent, string &multidoc_separator, bool &separator_read );
+// int     get_sent( istream &is, V2_STR &one_sent, string &multidoc_separator, bool &separator_read );
 string  assemble_tok_sent( const V2_STR &one_sent );
 int     tokenize( V1_STR &one_seg, string &one_line, const string &del );
 void    output_result( V2_STR &one_sent, ostream &os );
@@ -79,16 +80,18 @@ int main(int argc, char* argv[])
   bool     multidoc_mode = opt_parser.get_value("-multidoc", multidoc_separator);
   
   // 3. Run POS-tagging, Lemmatization and Chunking with Genia tagger ver. 3.0.1
-  if (multidoc_mode) {
+  if ( (argc == 3) || (argc == 5) ) {
     run_tagging(cin, cout, multidoc_separator, dont_tokenize);
-
-  }else if (argc == 3) {
-    run_tagging(cin, cout, "", dont_tokenize);
   
   }else if (opt_parser.get_value("-f", opt_value)) {
     ifstream ifs(opt_value.c_str());
-    run_tagging(ifs, cout, "", dont_tokenize);
-    ifs.close();
+		if( ifs ) {
+	    run_tagging(ifs, cout, multidoc_separator, dont_tokenize);
+  	  ifs.close();
+		}else {
+			cerr << "Can not open a file: " << opt_value.c_str() << endl;
+			exit(1);
+		}
   
   }else if (opt_parser.get_value("-l", opt_value)) {
     string  path = "./";
@@ -113,7 +116,7 @@ int main(int argc, char* argv[])
       }      
       ofstream ofs_res(result.c_str());
       
-      run_tagging(ifs_trg, ofs_res, "", dont_tokenize);
+      run_tagging(ifs_trg, ofs_res, multidoc_separator, dont_tokenize);
       ifs_trg.close();
       ofs_res.close();
     }
@@ -133,33 +136,31 @@ int run_tagging(istream &is, ostream &os, string multidoc_separator, bool dont_t
   
   bool multidoc_mode = multidoc_separator != "";
   bool separator_read;
+  
+	while (! is.eof() ) {
 
-  while (true) {
-    int n_words = get_sent(is, one_sent, multidoc_separator, separator_read);
-    if (n_words == 0) {
-      if ( multidoc_mode ) {          // if the nersuite tag mode is running with the multi-document option, process doc end
-	if ( separator_read ) {       // if the multi-document separator was seen, echo it on the output
-          cout << multidoc_separator << endl;
-	  cout.flush();
-	}
-	if ( is.eof() ) {             // only quit the program on EOF
-	  break;
-	} else {
-	  continue;
-	}
-      }else {                         // quit the program if no input detected
-        break;
-      }
-    }
+		// 1. Read a sentence (or comments)
+    NER::get_sent(is, one_sent, multidoc_separator, separator_read);
 
+		// 2. Pass the input to output, if the multidoc mode is on and the read sentence is lines of comments
+		if( multidoc_mode && separator_read ) {
+			for( V2_STR::iterator irow = one_sent.begin(); irow != one_sent.end(); ++irow ) {
+				os << irow->front() << endl;
+			}
+			os << endl;
+
+			continue;
+		}
+
+		// 3. Run the GENIA tagger on the sentence 
     string    tok_sent = assemble_tok_sent( one_sent );
     if( tok_sent.size() > 1024 )
-      cerr << "warning: the SentenceTagger seems to be too long at line " << n << endl;
+      cerr << "Warning: input sentence seems to be too long at the line, " << n << endl;
 
-    // 2.1. Run tagging
+    // 3.1. Run tagging
     string    tagged = bidir_postag( tok_sent, vme, vme_chunking, dont_tokenize );
 
-    // 2.2. Split the result and push them into the data container
+    // 3.2. Split the result and push them into the data container
     V2_STR::iterator  i_row_sent = one_sent.begin();
 
     V1_STR    line_items;
@@ -174,7 +175,7 @@ int run_tagging(istream &is, ostream &os, string multidoc_separator, bool dont_t
       ++i_row_sent;
     }
 
-    // 2.3. Output the result
+    // 3.3. Output the result
     output_result( one_sent, os );
     ++n;
   }
@@ -216,6 +217,7 @@ int genia_init( const string &genia_dir )
 
 
 // Get a SentenceTagger into a 2D string vector container
+/*
 int get_sent( istream &is, V2_STR &one_sent, string &multidoc_separator, bool &separator_read )
 {
   int  n_lines = 0;
@@ -242,7 +244,7 @@ int get_sent( istream &is, V2_STR &one_sent, string &multidoc_separator, bool &s
 
   return n_lines;
 }
-
+*/
 
 // Assemble a tokens into a string
 string assemble_tok_sent( const V2_STR &one_sent )
@@ -313,9 +315,8 @@ void output_usage(char *command)
     cerr << "    - Each column is tab-separated." << endl;
     cerr << endl;
     cerr << "  3. multi-document mode (for tag mode) " << endl;
-    cerr << "     - if -multidoc SEP option is given, looks for lines containing only the"   << endl;
+    cerr << "     - if -multidoc SEP option is given, looks for lines beginning with the "   << endl;
     cerr << "       separator SEP in the input and echoes the same on output." << endl; 
-    cerr << "       (Please do not use -f nor -l option)" << endl;
 
 }
 

@@ -67,7 +67,7 @@ namespace NER
 	{
 		set_column_info(MODE_LEARN);
 
-		int          ret = 0; //, arg_used = 0;
+		int   ret = 0; //, arg_used = 0;
 		FILE*	fpo = stdout;
 		FILE*	fpe = stderr;
 
@@ -113,10 +113,10 @@ namespace NER
 		clock_t		clk_current = clock();
 
 		/* Report the statistics of the training data. */
-		fprintf(fpo, "Number of instances: %d\n", trainer.get_instance_num());
-		fprintf(fpo, "Total number of items: %d\n", trainer.get_item_num());
-		fprintf(fpo, "Number of attributes: %d\n", trainer.get_label_num());
-		fprintf(fpo, "Number of labels: %d\n", trainer.get_attribute_num());
+		fprintf(fpo, "Number of instances: %d\n", (int) trainer.get_instance_num());
+		fprintf(fpo, "Total number of items: %d\n", (int) trainer.get_item_num());
+		fprintf(fpo, "Number of attributes: %d\n", (int) trainer.get_label_num());
+		fprintf(fpo, "Number of labels: %d\n", (int) trainer.get_attribute_num());
 		fprintf(fpo, "Seconds required: %.3f\n", (clk_current - clk_begin) / (double)CLOCKS_PER_SEC);
 		fprintf(fpo, "\n");
 		fflush(fpo);
@@ -201,7 +201,7 @@ namespace NER
 		istream             &is, 
 		ostream             &os,
 		CRFSuite::Tagger&   tagger,
-		FeatureExtractor   &FExtor
+		FeatureExtractor    &FExtor
 		)
 	{
 		map<string, int>  term_idx;
@@ -215,37 +215,22 @@ namespace NER
 		bool multidoc_mode = opt_parser.get_value("-multidoc", multidoc_separator); 
 		bool separator_read;
 
-		// reset base offset (start of document)
-		sentence_base_offset = 0;
+		while (! is.eof() ) {
+	    // 1. Read a sentence (or comments)
+			get_sent(is, one_sent, multidoc_separator, separator_read);
 
-		while (true) {
-			int n_words;
-			if (multidoc_mode) {
-				n_words = get_sent(is, one_sent, multidoc_separator, separator_read);
-			} else {
-				n_words = get_sent(is, one_sent);
-			}
-			if (n_words == 0) {
-				if (multidoc_mode) {            // if running with the multi-document option, process doc end
-					if ( separator_read ) { // if the multi-document separator was seen, echo it on the output
-						cout << multidoc_separator << endl;
-						cout.flush();
-						// reset base offset (start of document)
-						sentence_base_offset = 0;
-					}
-					if (is.eof()) {         // only quit on EOF in multi-document mode
-						break;
-					} else {
-						continue;
-					}
-				} else {                        // quit the program if no input detected
-					break;
+			// 2. Pass the input to output, if the multidoc mode is on and the read sentence is lines of comments
+	    if( multidoc_mode && separator_read ) {
+				for( V2_STR::iterator irow = one_sent.begin(); irow != one_sent.end(); ++irow ) {
+					os << irow->front() << endl;
 				}
+				os << endl;
+				continue;
 			}
 			
+			// 3. Extract features
 			sent_feats.clear();
 
-			// 1) Feature extraction
 			pad_answer(string("tag"), one_sent, sent_feats);            // CRFsuite needs that first columns are answer or dummy tags (in both training and test)
 
 			FExtor.ext_WORD_feats(one_sent, sent_feats);
@@ -255,14 +240,11 @@ namespace NER
 			FExtor.ext_LEMMA_POS_feats(one_sent, sent_feats);
 			FExtor.ext_CHUNK_feats(one_sent, sent_feats);
 
-			// Use dictionaries as a default option (the last argument turn on lexicalized dictionary features)
+			// 3.1. Use dictionaries as a default option (the last argument turn on lexicalized dictionary features)
 			FExtor.ext_DIC_feats(one_sent, sent_feats, 0);      
 
-			// 2) NER tagging
+			// 4. Tag named entities
 			tag_crfsuite(one_sent, sent_feats, tagger, term_idx, os);
-
-			// Advance sentence base offset by sentence length			
-			sentence_base_offset += atoi(one_sent[n_words-1][COL_INFO.END].c_str()) + one_sent[n_words-1][COL_INFO.WORD].length();
 		}
 
 		return 0;
@@ -271,15 +253,15 @@ namespace NER
 	int Suite::tag_crfsuite(
 		V2_STR                     &one_sent, 
 		V2_STR                     &sent_feat, 
-		CRFSuite::Tagger&			 tagger,
+		CRFSuite::Tagger&          tagger,
 		map<string, int>           &term_idx, 
 		ostream                    &os
 		)
 	{
-		int				ret = 0;
-		int                N = 0, L = 0, lid = -1;
-		clock_t            clk0, clk1;
-		CRFSuite::StringList		labels;
+		int                   ret = 0;
+		int                   N = 0, L = 0, lid = -1;
+		clock_t               clk0, clk1;
+		CRFSuite::StringList  labels;
 
 		// Obtain the dictionary interface representing the labels in the model.
 		try
@@ -378,8 +360,7 @@ namespace NER
 		bool brat_flavored
 		)
 	{
-		// int                           cnt;
-		static int										cnt2 = 1;     // cnt2 counts the entity index regardless of its semantic type
+		static int										cnt = 1;     // cnt counts the entity index regardless of its semantic type
 		string                        ne_term = "", ne_class = "", beg = "", end = "";
 		map<string, int>::iterator    check;
 
@@ -397,35 +378,15 @@ namespace NER
 
 			if (s_label == "O") {
 				if (ne_term != "") {
-					/*
-					if ((check = term_idx.find(ne_class)) == term_idx.end()) {
-						term_idx.insert(pair<string,int>(ne_class, 1));
-						cnt = 1;
-					}else {
-						cnt = ++(check->second);
-					}
-				
 					output_single_standoff(os, beg, end, cnt, ne_class, ne_term, brat_flavored);
-					*/
-					output_single_standoff(os, beg, end, cnt2, ne_class, ne_term, brat_flavored);
-					++cnt2;
+					++cnt;
 
 					ne_term = "";
 				}
 			}else if (s_label.substr(0, 1) == "B") {
 				if (ne_term != "") {
-					/*
-					if ((check = term_idx.find(ne_class)) == term_idx.end()) {
-						term_idx.insert(pair<string,int>(ne_class, 1));
-						cnt = 1;
-					}else {
-						cnt = ++(check->second);
-					}
-
 					output_single_standoff(os, beg, end, cnt, ne_class, ne_term, brat_flavored);
-					*/
-					output_single_standoff(os, beg, end, cnt2, ne_class, ne_term, brat_flavored);
-					++cnt2;
+					++cnt;
 				}
 
 				ne_term = one_sent[i][COL_INFO.WORD];
@@ -456,18 +417,8 @@ namespace NER
 		}
 
 		if (ne_term != "") {      // If the last token is "B" or "I"
-			/*
-			if ((check = term_idx.find(ne_class)) == term_idx.end()) {
-				term_idx.insert(pair<string,int>(ne_class, 1));
-				cnt = 1;
-			}else {
-				cnt = ++(check->second);
-			}
-
 			output_single_standoff(os, beg, end, cnt, ne_class, ne_term, brat_flavored);
-			*/
-			output_single_standoff(os, beg, end, cnt2, ne_class, ne_term, brat_flavored);
-			++cnt2;
+			++cnt;
 
 			ne_term = "";
 		}
@@ -498,10 +449,10 @@ namespace NER
 	void Suite::read_data(
 		istream              &is,
 		const COLUMN_INFO    &COL_INFO,
-		CRFSuite::Trainer*	trainer
+		CRFSuite::Trainer*   trainer
 		)
 	{
-		int         k_sents = 0;
+		int               k_sents = 0;
 		FeatureExtractor  FExtor(COL_INFO);
 
 		std::cerr << "Start feature extraction" << endl;
@@ -511,10 +462,22 @@ namespace NER
 		string	_attr = "";
 		string _value = "";
 
-		while(get_sent(is, one_sent) != 0) {
+		string multidoc_separator = "";
+		bool multidoc_mode = opt_parser.get_value("-multidoc", multidoc_separator); 
+		bool separator_read;
+
+		while( ! is.eof() ) {
+	    // 1. Read a sentence (or comments)
+			get_sent(is, one_sent, multidoc_separator, separator_read);
+
+			// 2. Ignore comment lines
+	    if( multidoc_mode && separator_read ) {
+				continue;
+			}
+		
+			// 3. Extract features
 			sent_feats.clear();
 
-			// 1) Feature extraction
 			pad_answer(string("learn"), one_sent, sent_feats);        // CRFsuite needs that first columns are answer or dummy tags (in both training and test)
 
 			FExtor.ext_WORD_feats(one_sent, sent_feats);
@@ -526,6 +489,7 @@ namespace NER
 
 			FExtor.ext_DIC_feats(one_sent, sent_feats, 0);      // Use dictionaries as a default option (the last argument turn on lexicalized dictionary features)
 
+			// 4. Train a model
 			CRFSuite::ItemSequence xseq;
 			CRFSuite::StringList yseq;
 			for (V2_STR::const_iterator i_row = sent_feats.begin(); i_row != sent_feats.end(); ++i_row) {
