@@ -85,7 +85,7 @@ void print_usage(char exe_name[])
 	cerr << "    - Default value is 'conll' format " << endl;
 	cerr << endl;
 	cerr << "  5. multidoc mode (for tag mode) " << endl;
-	cerr << "     - if -multidoc SEP option is given, looks for lines containing only the "   << endl;
+	cerr << "     - if -multidoc SEP option is given, looks for lines beginning with the "   << endl;
 	cerr << "       separator SEP in the input and echoes the same on output." << endl; 
 	cerr << endl;
 	cerr << "  6. input_file " << endl;

@@ -70,12 +70,11 @@ namespace NER
 
 		// Sentence Data (Tokenized array)
 		V2_STR	m_Content;
+		int     m_ContentType;     // 0: initial value, 1: comment, 2: sentence
 
 		std::vector<NE>		v_ne;
 
 		std::vector<int>	v_idx;
-
-		bool		document_separator_seen;
 
 	public:
 		/**
@@ -108,10 +107,29 @@ namespace NER
 		bool	empty() const { return m_Content.empty(); }
 
 		/**
-		* Test if a document separator was seen on input.
-		* @return Returns true if a document separator was seen.
+		* Test the type of m_Content.
+		* @return 0: not initialized, 1: comment, 2: sentence
 		*/
-		bool	doc_end() const { return document_separator_seen; }
+		int	get_content_type() const { 
+			return m_ContentType;
+		}
+
+		/**
+		* Set the content type. 
+		* @return Returns true if it has one content type, otherwise false
+		*/
+		bool	set_content_type(int _type) {
+			if( (m_ContentType == 0 || m_ContentType == 1) && (_type == 1) ) {
+				m_ContentType = 1;
+				return true;
+			}else if( (m_ContentType == 0 || m_ContentType == 2) && (_type == 2) ) {
+				m_ContentType = 2;
+				return true;
+			}	else {
+				std::cerr << "Error: Input data format: Comments and sentences must be separated by a blank line." << std::endl;
+				return false;
+			}
+		}
 
 		/**
 		* The begin() iterator for the internal token list

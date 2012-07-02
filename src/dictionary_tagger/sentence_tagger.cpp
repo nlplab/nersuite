@@ -13,38 +13,48 @@ namespace NER
 	{
 		v_ne.reserve(256);
 		v_idx.reserve(128);
-		document_separator_seen = false;
+		m_ContentType = 0;
 	}
 
 	size_t SentenceTagger::read(istream &is, const string &multidoc_separator)
 	{
 		m_Content.clear();		// clear the container
+		m_ContentType = 0;
 
-		string				line = "";
-		vector<string>		line_items;
+		string           line = "";
+		vector<string>   line_items;
 
-		// reset document end marker on start
-		document_separator_seen = false;
-
-		while (true) 
+		while (! is.eof()) 
 		{
 			getline(is, line);
+
+			// 1. Break if it reaches an empty line
 			if (line.empty())
-			{
-				// break if a blank line appears
 				break;
+
+			// 2. Deal with the comments  
+			if( multidoc_separator != "" && line.compare(0, multidoc_separator.length(), multidoc_separator) == 0 ) {
+				if( set_content_type( 1 ) == false ) {
+					exit(1);
+				}
+
+				// Save the line as it is
+				line_items.clear();
+				line_items.push_back( line );
+				m_Content.push_back( line_items );
+
+				continue;
 			}
 
-			if (multidoc_separator != "" && line == multidoc_separator)
-			{
-				// mark doc end and break on document separator
-				document_separator_seen = true;
-				break;
+			// 3. Deal with a sentence
+			if( set_content_type( 2 ) == false ) {
+				exit(1);
 			}
 
 			tokenize(line_items, line, "\t");		// tokenize and
 			m_Content.push_back(line_items);		// save it
 		}
+		
 		return size();
 	}
 

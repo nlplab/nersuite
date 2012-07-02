@@ -36,7 +36,7 @@ using namespace std;
 
 namespace NER
 {
-	// retrieve one sentence from input stream.
+	// Retrieve one sentence from input stream.
 	// Each line consists of tab-separated columns (label + feature list).
 	//   First column is the label assigned for the feature list.
 	//   The following columns are the feature list.
@@ -64,14 +64,23 @@ namespace NER
 		return n_lines;
 	}
 
+	// Functionality: 
+	//     - Retrieve one sentence from input stream, or comment sentences which begin with a specified 
+	//     prefix, multidoc_separator.
+	// Return value:  
+	//     - # of lines read regardless input type (sentence or comment)
+	// Input:
+	//     - Lines of comments must be separated from a previous (and next) sentence with a blank line
 	int get_sent(istream &cin, V2_STR &one_sent, const string &multidoc_separator, bool &separator_read)
 	{
 		one_sent.clear();		// clear the container
 		separator_read = false;
 
-		int					n_lines = 0;
-		string				line = "";
-		vector<string>		line_items;
+		int              n_lines = 0;
+		string           line = "";
+		vector<string>   line_items;
+		int              mode = 0;    // 0: initialized, 1: sentence, 2: comment
+		int              nSep = multidoc_separator.length();
 
 		while(true) 
 		{
@@ -79,41 +88,41 @@ namespace NER
 			if(line.empty())						// break if a blank line appears
 				break;
 
-			if(line == multidoc_separator)                  // break if a document separator appears
+			if( line.compare(0, nSep, multidoc_separator) == 0 )
 			{
-				separator_read = true;
-				break;
+				if( mode == 1 ) {
+					cerr << "Error: Input data format: multidoc comment lines must be separated from sentences by a blank line" << endl;
+					exit(1);
+				}else {
+					mode = 2;
+				}
+
+				line_items.clear();
+				line_items.push_back( line );
+				one_sent.push_back( line_items );   // Add a comment line as it is
+			}else {
+				if( mode == 2 ) {
+					cerr << "Error: Input data format: sentence part must be separated from comment lines by a blank" << endl;
+					exit(1);
+				}else {
+					mode = 1;
+				}
+
+				tokenize(line_items, line, "\t");		// tokenize and
+				one_sent.push_back(line_items);			// save it
 			}
-
-			tokenize(line_items, line, "\t");		// tokenize and
-			one_sent.push_back(line_items);			// save it
-
+		
 			n_lines++;
+		}
+
+		if( mode == 2 ) {
+			separator_read = true;
 		}
 
 		return n_lines;
 	}
 
-	int get_sent(ifstream &ifs, V2_STR &one_sent)
-	{
-		one_sent.clear();		// clear the container
-
-		int					n_lines = 0;
-		string				line = "";
-		vector<string>		line_items;
-
-		while(! ifs.eof()) 
-		{
-			getline(ifs, line);
-			if(line.empty())						// break if a blank line appears
-				break;
-
-			tokenize(line_items, line, "\t");		// tokenize and
-			one_sent.push_back(line_items);			// save it
-
-			n_lines++;
-		}
-
-		return n_lines;
-	}
 }
+
+
+
