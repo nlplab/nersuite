@@ -11,6 +11,8 @@ bin_PROGRAMS = nersuite_gtagger
 nersuite_gtagger_SOURCES = \
 	run.gtagger.cpp \
 	option_parser/option_parser.h \
+	../nersuite_common/text_loader.h \
+	../nersuite_common/text_loader.cpp \
 	geniatagger-3.0.1/bidir.cpp \
 	geniatagger-3.0.1/chunking.cpp \
 	geniatagger-3.0.1/maxent.cpp \
@@ -21,7 +23,7 @@ nersuite_gtagger_SOURCES = \
 	geniatagger-3.0.1/common.h
 
 nersuite_gtagger_CPPFLAGS = -Wno-deprecated @CFLAGS@
-INCLUDES = -I./geniatagger-3.0.1 -I./option_parser
+INCLUDES = -I./geniatagger-3.0.1 -I./option_parser -I../nersuite_common
 
 #AM_CFLAGS = @CFLAGS@
 #INCLUDES = @INCLUDES@

@@ -24,13 +24,29 @@ And other collegues who willingly tested NERsuite and gave comments and advices
 * History
 
 
-Minor updates:
+Version 1.2.1 (2012.07.02)
+	- Change: -multidoc [SEP] option for all programs now regards lines "beginning 
+	            with" [SEP] as comment lines and print them without any modification,
+	            whereas it previously dealt with the lines "exactly same" to [SEP].
+	            In addition, multiple comment lines can be used from this version.
+	
+	- Change: nersuite_tokenizer computes token offsets at document level, whereas
+	            it used sentence level token offsets. When it encounters a document
+	            separator, which is given by -multidoc [SEP] option, the tokenizer
+	            resets the offset to 0.
+	
+	- New function: correct_mp program which removes named entities having mismatched
+	            parenthesis is added. Documentation will be added to the homepage
+	            later.
+
+Minor updates (2012.06.28)
 	- Change: the standoff and brat output option now use unique IDs for entities 
-	regardless of their semantic types. The IDs are also counted in document level, 
-	whereas the conll option still counts it in sentence level.
+	            regardless of their semantic types. The IDs are also counted in 
+	            document level, whereas the conll option still counts it in sentence 
+	            level.
 
 	- Bug fix: a bug of the string normalization part of the dictionary compiler and 
-	tagger is fixed.
+	            tagger is fixed.
 	
 	- New function: brat format for output is added (by Sampo Pyysalo)
 

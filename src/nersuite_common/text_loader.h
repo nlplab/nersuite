@@ -82,23 +82,6 @@ namespace NER
 	*/
 	extern int get_sent(std::istream &cin, V2_STR &one_sent, const std::string &multidoc_separator, bool &separator_read);
 
-	/** 
-	* @ingroup NERsuite
-	*/
-	/**
-	* Read a sentence from a file stream and construct Token List for the sentence.
-	*
-	* Each line consists of tab-separated columns (label + feature list).
-	* First column is the label assigned for the feature list.
-	* The following columns are the feature list.
-	*
-	* @param[in] cin Input stream (Each sentence must be separated with an empty line.)
-	* @param[in,out] one_sent Token List for a sentence.
-	*  Any existing contents are cleared before processing.
-	* @returns count of tokens in the sentence
-	* 
-	*/
-	extern int get_sent(std::ifstream &cin, V2_STR &one_sent);
 }
 
 #endif

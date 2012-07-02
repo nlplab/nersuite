@@ -10,19 +10,18 @@ bin_PROGRAMS = nersuite_correct_mp
 
 nersuite_correct_mp_SOURCES = \
 	main.cpp \
-	string_utils/string_utils.h \
-	string_utils/string_utils.cpp \
-	text_loader/text_loader.h \
-	text_loader/text_loader.cpp \
-	opt_parser/opt_parser.h \
-	opt_parser/opt_parser.cpp \
-	seg_rep_changer/seg_rep_changer.h \
-	seg_rep_changer/seg_rep_changer.cpp \
-	mp_corrector/mp_corrector.h \
-	mp_corrector/mp_corrector.cpp
+	../nersuite_common/string_utils.h \
+	../nersuite_common/string_utils.cpp \
+	../nersuite_common/text_loader.h \
+	../nersuite_common/text_loader.cpp \
+	../nersuite_common/option_parser.h \
+	seg_rep_changer.h \
+	seg_rep_changer.cpp \
+	mp_corrector.h \
+	mp_corrector.cpp
 	
 nersuite_correct_mp_CPPFLAGS = @CFLAGS@
-INCLUDES = -Istring_utils -Itext_loader -Iopt_parser -Iseg_rep_changer -Imp_corrector @INCLUDES@
+INCLUDES = -I../nersuite_common @INCLUDES@
 
 #AM_CFLAGS = @CFLAGS@
 #INCLUDES = @INCLUDES@

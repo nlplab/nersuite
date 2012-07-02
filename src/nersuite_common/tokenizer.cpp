@@ -76,13 +76,13 @@ namespace NER
 		char	chr_pos[128];
 
 		for( V2_STR::iterator i_row = data.begin(); i_row != data.end(); ++i_row ) {
-			beg = init_offset + raw_sent.find_first_of( *(i_row->end() - 1), end);
-			end = beg + (i_row->end() - 1)->length();
+			beg = raw_sent.find_first_of( i_row->back(), end );
+			end = beg + i_row->back().length();
 
-			sprintf(chr_pos, "%d", beg);
+			sprintf(chr_pos, "%d", init_offset + beg);
 			i_row->insert( i_row->end() - 1, chr_pos );
 
-			sprintf(chr_pos, "%d", end);
+			sprintf(chr_pos, "%d", init_offset + end);
 			i_row->insert( i_row->end() - 1, chr_pos );
 		}	
 	}
