@@ -80,7 +80,7 @@ int main(int argc, char* argv[])
   bool     multidoc_mode = opt_parser.get_value("-multidoc", multidoc_separator);
   
   // 3. Run POS-tagging, Lemmatization and Chunking with Genia tagger ver. 3.0.1
-  if ( (argc == 3) || (argc == 5) ) {
+  if ( (argc == 3) || ( (argc == 5) && (multidoc_mode == true) ) ) {
     run_tagging(cin, cout, multidoc_separator, dont_tokenize);
   
   }else if (opt_parser.get_value("-f", opt_value)) {
@@ -94,7 +94,7 @@ int main(int argc, char* argv[])
 		}
   
   }else if (opt_parser.get_value("-l", opt_value)) {
-    string  path = "./";
+		string  path = "./";
 		int     idx = opt_value.find_last_of('/');
 		if (idx != string::npos)
 			path = opt_value.substr(0, idx+1);
@@ -108,12 +108,15 @@ int main(int argc, char* argv[])
     string  fn = "";
     while(getline(ifs_lst, fn)) {
       string target = path + fn, result = path + fn + ".gtag";
-      
+
       ifstream ifs_trg(target.c_str());
       if (! ifs_trg) {
         cerr << "Cannot open a target file! " << target << endl;
         return -4;
-      }      
+      }else {
+				cerr << "Processing a file: " << target << endl;
+			}
+
       ofstream ofs_res(result.c_str());
       
       run_tagging(ifs_trg, ofs_res, multidoc_separator, dont_tokenize);
@@ -138,10 +141,9 @@ int run_tagging(istream &is, ostream &os, string multidoc_separator, bool dont_t
   bool separator_read;
   
 	while (! is.eof() ) {
-
 		// 1. Read a sentence (or comments)
     NER::get_sent(is, one_sent, multidoc_separator, separator_read);
-
+		
 		// 2. Pass the input to output, if the multidoc mode is on and the read sentence is lines of comments
 		if( multidoc_mode && separator_read ) {
 			for( V2_STR::iterator irow = one_sent.begin(); irow != one_sent.end(); ++irow ) {
@@ -154,7 +156,7 @@ int run_tagging(istream &is, ostream &os, string multidoc_separator, bool dont_t
 
 		// 3. Run the GENIA tagger on the sentence 
     string    tok_sent = assemble_tok_sent( one_sent );
-    if( tok_sent.size() > 1024 )
+		if( tok_sent.size() > 1024 )
       cerr << "Warning: input sentence seems to be too long at the line, " << n << endl;
 
     // 3.1. Run tagging
@@ -252,7 +254,8 @@ string assemble_tok_sent( const V2_STR &one_sent )
   string  tok_sent = "";
 
   for( V2_STR::const_iterator i_row = one_sent.begin(); i_row != one_sent.end(); ++i_row ) {
-    tok_sent += i_row->back();
+    cerr << (*i_row)[0] << endl;
+		tok_sent += i_row->back();
     if( (i_row + 1) != one_sent.end() )
       tok_sent += " ";
   }
