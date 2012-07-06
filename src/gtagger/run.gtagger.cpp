@@ -218,43 +218,12 @@ int genia_init( const string &genia_dir )
 }
 
 
-// Get a SentenceTagger into a 2D string vector container
-/*
-int get_sent( istream &is, V2_STR &one_sent, string &multidoc_separator, bool &separator_read )
-{
-  int  n_lines = 0;
-  string  line = "";
-  V1_STR  one_row;
-
-  one_sent.clear();
-  separator_read = false;
-
-  while( getline( is, line ) ) {
-    if( line.empty() )    // Stop when a blank line (the end of a SentenceTagger) appears
-      break;
-
-    if( line == multidoc_separator ) {  // Stop when a line containing only a document separator appears
-      separator_read = true;
-      break;
-    }
-
-    tokenize( one_row, line, "\t" );
-    one_sent.push_back( one_row ); 
-
-    ++n_lines;
-  }
-
-  return n_lines;
-}
-*/
-
 // Assemble a tokens into a string
 string assemble_tok_sent( const V2_STR &one_sent )
 {
   string  tok_sent = "";
 
   for( V2_STR::const_iterator i_row = one_sent.begin(); i_row != one_sent.end(); ++i_row ) {
-    cerr << (*i_row)[0] << endl;
 		tok_sent += i_row->back();
     if( (i_row + 1) != one_sent.end() )
       tok_sent += " ";
