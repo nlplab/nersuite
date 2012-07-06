@@ -23,6 +23,10 @@ And other collegues who willingly tested NERsuite and gave comments and advices
 
 * History
 
+Minor updates (2012.07.06)
+	- Bug fix: nersuite_gtagger crashed with segmentation fault when it runs without
+	            -multidoc argument.
+
 
 Version 1.2.1 (2012.07.02)
 	- Change: -multidoc [SEP] option for all programs now regards lines "beginning 
@@ -38,6 +42,7 @@ Version 1.2.1 (2012.07.02)
 	- New function: correct_mp program which removes named entities having mismatched
 	            parenthesis is added. Documentation will be added to the homepage
 	            later.
+
 
 Minor updates (2012.06.28)
 	- Change: the standoff and brat output option now use unique IDs for entities 

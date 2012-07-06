@@ -81,6 +81,7 @@ namespace NER
 		vector<string>   line_items;
 		int              mode = 0;    // 0: initialized, 1: sentence, 2: comment
 		int              nSep = multidoc_separator.length();
+		bool             multidoc_mode = multidoc_separator != "";
 
 		while(true) 
 		{
@@ -88,7 +89,7 @@ namespace NER
 			if(line.empty())						// break if a blank line appears
 				break;
 
-			if( line.compare(0, nSep, multidoc_separator) == 0 )
+			if( multidoc_mode && (line.compare(0, nSep, multidoc_separator) == 0) )
 			{
 				if( mode == 1 ) {
 					cerr << "Error: Input data format: multidoc comment lines must be separated from sentences by a blank line" << endl;
