@@ -81,7 +81,10 @@ namespace NER
 		vector<string>   line_items;
 		int              mode = 0;    // 0: initialized, 1: sentence, 2: comment
 		int              nSep = multidoc_separator.length();
-		bool             multidoc_mode = multidoc_separator != "";
+		
+		bool             multidoc_mode = false;
+		if( multidoc_separator != "" )
+			multidoc_mode = true;
 
 		while(true) 
 		{
