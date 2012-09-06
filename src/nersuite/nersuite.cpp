@@ -115,8 +115,8 @@ namespace NER
 		/* Report the statistics of the training data. */
 		fprintf(fpo, "Number of instances: %d\n", (int) trainer.get_instance_num());
 		fprintf(fpo, "Total number of items: %d\n", (int) trainer.get_item_num());
-		fprintf(fpo, "Number of attributes: %d\n", (int) trainer.get_label_num());
-		fprintf(fpo, "Number of labels: %d\n", (int) trainer.get_attribute_num());
+		fprintf(fpo, "Number of attributes: %d\n", (int) trainer.get_attribute_num());
+		fprintf(fpo, "Number of labels: %d\n", (int) trainer.get_label_num());
 		fprintf(fpo, "Seconds required: %.3f\n", (clk_current - clk_begin) / (double)CLOCKS_PER_SEC);
 		fprintf(fpo, "\n");
 		fflush(fpo);
