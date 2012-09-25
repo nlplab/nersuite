@@ -1,24 +1,7 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html><head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <meta name="author" content="Tsujii Laboratory" lang="en">
-  <meta name="Copyright" content="� 2007 Tsujii Laboratory">
-  <meta name="Keywords" content="Tsujii,Laboratory" lang="en">
-  <meta name="Description" content="Tsujii Laboratory" lang="en">
-  <meta name="Rating" content="General">
-  <meta name="Robots" content="INDEX,FOLLOW">
-  <meta name="Revisit-after" content="7">
-  <meta name="Distribution" content="Global">
-  <link href="css/default.css" rel="stylesheet" type="text/css">
+---
+layout: base
+---
 
-  <title> NERsuite - a Named Entity Recognition toolkit </title>
-
-  <link href="css/index.css" rel="stylesheet" type="text/css">
-</head>
-
-<body class="en" id="home">
-<div id="frame">
   <div id="content">
     <div id="maincol">
       <div> <center> <h1>NERsuite</h1> </center> </div>
@@ -354,31 +337,9 @@
 
 
 <div id="subcol">
-<div id="menu">
-<div> &nbsp; </div>
-<div> &nbsp; </div>
-<div> &nbsp; </div>
-<div> &nbsp; </div>
-<ul>
-  <li> <a href="index.html">Home</a></li>
-  <li> <a href="index.html#News">What's New</a></li>
-  <li> <a href="download.html">Download</a>
-  </li><li> <a href="installation_guide.html">Installation Guide</a>
-  </li><li> <a href="basic_usage.html">Basic Usage</a>
-  </li><li  class="selected"> <a href="advanced_usage.html">Advanced Usage</a>
-  </li><li> <a href="command_reference.html">Command Reference</a>
-  </li><li> <a href="faqs.html">FAQs</a>
-</li></ul>
+  {% include menu.html %}
 </div>
 </div>
-</div>
-<div id="footer">
-<div id="footer1">� Tsujii Laboratory, Department of Information
-Science, The University of Tokyo</div>
-<div id="footer2">Dept. of Science Bldg. 7, Tokyo University, 7-3-1
-Hongo, Bunkyo-ku, 113-0033 Tokyo Japan</div>
+{% include ftr.html %}
 </div>
 </div>
-
-
-</body></html>

@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>
+            {% if page.title %}
+                {{ page.title }} -
+            {% endif %}
+            NERSuite - a Named Entity Recognition toolkit
+        </title>
+        <link href="css/default.css" rel="stylesheet" type="text/css"/>
+        <link href="css/index.css" rel="stylesheet" type="text/css"/>
+        <!-- Google Analytics -->
+        <script type="text/javascript" src="src/google_analytics.js"></script>
+    </head>
+    <body class="en" id="home">
+        {{ content }}
+    </body>
+</html>
