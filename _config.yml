@@ -1,0 +1,8 @@
+auto:       true
+markdown:   maruku
+permalink:  date
+pygments:   true
+safe:       true
+server:     true
+
+exclude: CNAME

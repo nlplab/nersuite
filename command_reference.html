@@ -1,94 +1,80 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta http-equiv="Content-Style-Type" content="text/css" />
-    <meta name="author" content="Tsujii Laboratory" lang="en" />
-    <meta name="Copyright" content="� 2007 Tsujii Laboratory" />
-    <meta name="Keywords" content="Tsujii,Laboratory" lang="en" />
-    <meta name="Description" content="Tsujii Laboratory" lang="en" />
-    <meta name="Rating" content="General" />
-    <meta name="Robots" content="INDEX,FOLLOW" />
-    <meta name="Revisit-after" content="7" />
-    <meta name="Distribution" content="Global" />
-    <link href="css/default.css" rel="stylesheet" type="text/css" />
-    <title>NERsuite - a Named Entity Recognition toolkit </title>
-    <link href="css/index.css" rel="stylesheet" type="text/css" />
-</head>
-<body class="en" id="home">
-    <div id="frame">
-        <div id="content">
-            <div id="maincol">
+---
+layout: base
+---
+
+<div id="frame">
+    <div id="content">
+        <div id="maincol">
+            <div>
+                <center>
+                    <h1>
+                        NERsuite</h1>
+                </center>
+            </div>
+            <div>
+                <center>
+                    <h3>
+                        <i>A Named Entity Recognition toolkit</i>
+                    </h3>
+                </center>
+            </div>
+            <div id="maindiv">
                 <div>
-                    <center>
-                        <h1>
-                            NERsuite</h1>
-                    </center>
-                </div>
-                <div>
-                    <center>
-                        <h3>
-                            <i>A Named Entity Recognition toolkit</i>
-                        </h3>
-                    </center>
-                </div>
-                <div id="maindiv">
-                    <div>
-                        <h2 id="welcome">
-                            Command Reference</h2>
-                        <h3 id="nersuite" class="api">nersuite</h3>
-                        <h4>Syntax</h4>
-                        <code>
-                        nersuite &lt;mode&gt; &lt;-m model_filename&gt; [-C C2_value] [-o output_format] [file(s)]
-                        </code>
-                        <h4>Parameters</h4>
+                    <h2 id="welcome">
+                        Command Reference</h2>
+                    <h3 id="nersuite" class="api">nersuite</h3>
+                    <h4>Syntax</h4>
+                    <code>
+                    nersuite &lt;mode&gt; &lt;-m model_filename&gt; [-C C2_value] [-o output_format] [file(s)]
+                    </code>
+                    <h4>Parameters</h4>
 <pre>
-  1. mode 
-    - 'learn' or 'tag' 
+1. mode 
+- 'learn' or 'tag' 
 
-  2. model_filename 
-    - A model file name for storing a trained model in
-     'train' mode, or for loading a model in 'tag' mode
+2. model_filename 
+- A model file name for storing a trained model in
+ 'train' mode, or for loading a model in 'tag' mode
 
-  3. C2 value  (for learn mode) 
-    - The C2 value of the CRFSuite Learning parameter 
-    - Default value is 1.0 
+3. C2 value  (for learn mode) 
+- The C2 value of the CRFSuite Learning parameter 
+- Default value is 1.0 
 
-  4. output_format  (for tag mode) 
-    - 'conll' or 'standoff' format 
-    - Default value is 'conll' format 
+4. output_format  (for tag mode) 
+- 'conll' or 'standoff' format 
+- Default value is 'conll' format 
 
-  5. input_file 
-    - Input file(s) can be delivered in three ways.
-      1. re-directed standard input.
-      2. an input file name with -f option. (e.g. -f input.txt)
-      3. a file of input file names with -l option. (e.g. -l list.txt)
-        a file in the list file needs to have a relative path 
-        from the directory in which the list file stored.
-    - An input file consists of columns as follows.
-        [1st col.] - the byte position of the first letter of a token. 
-        [2nd col.] - the byte position one past the last letter of a token. 
-        [3rd col.] - raw token (word)
-        [4th col.] - lemma
-        [5th col.] - POS tag
-        [6th col.] - chunk tag
-        [7th ... ] - any attributes
-          P.s. With learn option, 1st column is a correct named entity label 
-          for each line and other columns will be placed one column 
-          after then the original position
+5. input_file 
+- Input file(s) can be delivered in three ways.
+  1. re-directed standard input.
+  2. an input file name with -f option. (e.g. -f input.txt)
+  3. a file of input file names with -l option. (e.g. -l list.txt)
+    a file in the list file needs to have a relative path 
+    from the directory in which the list file stored.
+- An input file consists of columns as follows.
+    [1st col.] - the byte position of the first letter of a token. 
+    [2nd col.] - the byte position one past the last letter of a token. 
+    [3rd col.] - raw token (word)
+    [4th col.] - lemma
+    [5th col.] - POS tag
+    [6th col.] - chunk tag
+    [7th ... ] - any attributes
+      P.s. With learn option, 1st column is a correct named entity label 
+      for each line and other columns will be placed one column 
+      after then the original position
 </pre>
-                        <h4>Example</h4>
-                        <p>
-                            For learning:</p>
+                    <h4>Example</h4>
+                    <p>
+                        For learning:</p>
 <pre>
-    $ nersuite learn -m model.m &lt; source.features_learn.txt
+$ nersuite learn -m model.m &lt; source.features_learn.txt
 </pre>
 <p>
-    The following is a sample snippet of &quot;source.features_learn.txt&quot;. 
-    As this is a training data, the correct labels are given in the first columns.</p>
-                        <p>
-    &nbsp;This example does not have 
-    Dictionary Features.
+The following is a sample snippet of &quot;source.features_learn.txt&quot;. 
+As this is a training data, the correct labels are given in the first columns.</p>
+                    <p>
+&nbsp;This example does not have 
+Dictionary Features.
 </p>
 <pre>
 ...
@@ -127,13 +113,13 @@ O	40	41	)	)	)	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	
 O	42	45	are	be	VBP	B-VP	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O
 ...
 </pre>
-                        <p>
-                            For Tagging:</p>
-                        <pre>     $ nersuite tag -m model.m &lt; source.features.txt &gt; result.features.txt
-                        </pre>
+                    <p>
+                        For Tagging:</p>
+                    <pre>     $ nersuite tag -m model.m &lt; source.features.txt &gt; result.features.txt
+                    </pre>
 <p>
-    The following is a sample snippet of &quot;source.features.txt&quot;. (Only shows an example without 
-    Dictionary Features.)
+The following is a sample snippet of &quot;source.features.txt&quot;. (Only shows an example without 
+Dictionary Features.)
 </p>
 <pre>
 ...
@@ -154,22 +140,22 @@ O	42	45	are	be	VBP	B-VP	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	
 82	83	.	.	.	O
 ...
 </pre>
-                        <p>
-                            Please make sure that each line of input data is always terminated with LF (not 
-                            CR LF) in a Linux environment.</p>
+                    <p>
+                        Please make sure that each line of input data is always terminated with LF (not 
+                        CR LF) in a Linux environment.</p>
 
-                        <h3 id="nersuite_tokenizer" class="api">nersuite_tokenizer</h3>
-                        <h4>Syntax</h4>
-                        <code>
-                        nersuite_tokenizer &lt; input_file &gt; output_file
-                        </code>
-                        <h4>Parameters</h4>
+                    <h3 id="nersuite_tokenizer" class="api">nersuite_tokenizer</h3>
+                    <h4>Syntax</h4>
+                    <code>
+                    nersuite_tokenizer &lt; input_file &gt; output_file
+                    </code>
+                    <h4>Parameters</h4>
 <pre>
 </pre>
-                        <h4>Example</h4>
-                        <pre>
-    $ nersuite_tokenizer < source.txt > source.tokenized.txt
-                        </pre>
+                    <h4>Example</h4>
+                    <pre>
+$ nersuite_tokenizer < source.txt > source.tokenized.txt
+                    </pre>
 <p>
 "source.txt" should be in the format like the following example:
 </p>
@@ -178,28 +164,28 @@ O	42	45	are	be	VBP	B-VP	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	O	
 DG and GG were synthesized using 3-methylcholanthrene-induced rat liver microsomes.
 ...
 </pre>
-                        <h3 id="nersuite_gtagger" class="api">nersuite_gtagger</h3>
-                        <h4>Syntax</h4>
-                        <code>
-                        nersuite_gtagger -d  &lt;path_to_the_model_directory&gt;  [file(s)]
-                        </code>
-                        <h4>Parameters</h4>
+                    <h3 id="nersuite_gtagger" class="api">nersuite_gtagger</h3>
+                    <h4>Syntax</h4>
+                    <code>
+                    nersuite_gtagger -d  &lt;path_to_the_model_directory&gt;  [file(s)]
+                    </code>
+                    <h4>Parameters</h4>
 <pre>
-  1. path_to_the_model_directory
-    - Path to the directory in which the GENIA tagger models are stored 
-  2. [file(s)]
-    - Input file(s) can be delivered in three ways.
-      1. re-directed standard input.
-      2. an input file name with -f option. (e.g. -f input.txt)
-      3. a file of input file names with -l option. (e.g. -l list.txt)
-        a file in the list file needs to have a relative path from the directory in which the list file stored.
-    - A file consists of a beginning position, a past-the-end position and a token columns.
-    - Each column is tab-separated.
+1. path_to_the_model_directory
+- Path to the directory in which the GENIA tagger models are stored 
+2. [file(s)]
+- Input file(s) can be delivered in three ways.
+  1. re-directed standard input.
+  2. an input file name with -f option. (e.g. -f input.txt)
+  3. a file of input file names with -l option. (e.g. -l list.txt)
+    a file in the list file needs to have a relative path from the directory in which the list file stored.
+- A file consists of a beginning position, a past-the-end position and a token columns.
+- Each column is tab-separated.
 </pre>
-                        <h4>Example</h4>
-                        <pre>
-    $ nersuite_gtagger -d gtagger_models < source.tokenized.txt > source.features.txt
-                        </pre>
+                    <h4>Example</h4>
+                    <pre>
+$ nersuite_gtagger -d gtagger_models < source.tokenized.txt > source.features.txt
+                    </pre>
 <p>
 "source.tokenized.txt" should be in the format like the following example:
 </p>
@@ -222,28 +208,28 @@ DG and GG were synthesized using 3-methylcholanthrene-induced rat liver microsom
 82	83	.
 ...
 </pre>
-                        <h3 id="nersuite_dic_compiler" class="api">nersuite_dic_compiler</h3>
-                        <h4>Syntax</h4>
-                        <code>
-                        nersuite_dic_compiler [options] &lt;Text_dictionary_filename&gt; &lt;CDB++_DB_filename&gt;
-                        </code>
-                        <h4>Parameters</h4>
+                    <h3 id="nersuite_dic_compiler" class="api">nersuite_dic_compiler</h3>
+                    <h4>Syntax</h4>
+                    <code>
+                    nersuite_dic_compiler [options] &lt;Text_dictionary_filename&gt; &lt;CDB++_DB_filename&gt;
+                    </code>
+                    <h4>Parameters</h4>
 <pre>
-  Text dictionary should be a text file containing dictionary entries,
-  one per line with the following tab-separated format:
-    Named_Entity &lt;tab&gt; Class1 &lt;tab&gt; Class2 &lt;tab&gt; Class3 ...
-  Options:
-    -n &lt;type_of_normalization&gt; : Normalization type for dictionary matching
-       can be "none" or any combination of "c", "n", "s", "t"
-       none (default): No normalization
-       c: Case insensitive (convert all letters to lowercase)
-       cn: Case AND Number insensitive (convert all numbers to '0')
-       cns: Case AND Number AND Symbol insensitive (convert all symbols to '_')
-       t: Use token-base matching
+Text dictionary should be a text file containing dictionary entries,
+one per line with the following tab-separated format:
+Named_Entity &lt;tab&gt; Class1 &lt;tab&gt; Class2 &lt;tab&gt; Class3 ...
+Options:
+-n &lt;type_of_normalization&gt; : Normalization type for dictionary matching
+   can be "none" or any combination of "c", "n", "s", "t"
+   none (default): No normalization
+   c: Case insensitive (convert all letters to lowercase)
+   cn: Case AND Number insensitive (convert all numbers to '0')
+   cns: Case AND Number AND Symbol insensitive (convert all symbols to '_')
+   t: Use token-base matching
 </pre>
-                        <h4>Example</h4>
-                        <pre>     $ nersuite_dic_compiler -n cns dictionary.txt dictionary.cdbpp
-                        </pre>
+                    <h4>Example</h4>
+                    <pre>     $ nersuite_dic_compiler -n cns dictionary.txt dictionary.cdbpp
+                    </pre>
 <p>
 "dictionary.txt" should be in the format like the following example (the column after a tab assigns a class to the word):
 </p>
@@ -253,35 +239,35 @@ hydroxyacyl-Coenzyme A dehydrogenase&lt;tab&gt;EntrezGene
 hydroxyacyl-Coenzyme A dehydrogenase pseudogene&lt;tab&gt;EntrezGene
 ...
 </pre>
-                        <h3 id="nersuite_dic_tagger" class="api">nersuite_dic_tagger/h3>
-                        <h4>Syntax</h4>
-                        <code>
-                        nersuite_dic_tagger [options] CDB++_DB_filename &lt; standard input 
-                        </code>
-                        <h4>Parameters</h4>
+                    <h3 id="nersuite_dic_tagger" class="api">nersuite_dic_tagger/h3>
+                    <h4>Syntax</h4>
+                    <code>
+                    nersuite_dic_tagger [options] CDB++_DB_filename &lt; standard input 
+                    </code>
+                    <h4>Parameters</h4>
 <pre>
-    Options:
-    -n &lt;type_of_normalization&gt; : Normalization type for dictionary matching
-       none (default): No normalization
-       can be "none" or any combination of "c", "n", "s", "t"
-       c: Case insensitive (convert all letters to lowercase)
-       cn: Case AND Number insensitive (convert all numbers to '0')
-       cns: Case AND Number AND Symbol insensitive (convert all symbols to '_')
-       t: Use token-base matching
+Options:
+-n &lt;type_of_normalization&gt; : Normalization type for dictionary matching
+   none (default): No normalization
+   can be "none" or any combination of "c", "n", "s", "t"
+   c: Case insensitive (convert all letters to lowercase)
+   cn: Case AND Number insensitive (convert all numbers to '0')
+   cns: Case AND Number AND Symbol insensitive (convert all symbols to '_')
+   t: Use token-base matching
 
-    Line format of the input file: 
-         [1st col.] - the byte position of the first letter of a token. 
-         [2nd col.] - the byte position one past the last letter of a token. 
-         [3rd col.] - raw token
-         [4th col.] - lemma
-         [5th col.] - POS tag
-         [6th col.] - chunk tag
-         [7th ... ] - any attributes
+Line format of the input file: 
+     [1st col.] - the byte position of the first letter of a token. 
+     [2nd col.] - the byte position one past the last letter of a token. 
+     [3rd col.] - raw token
+     [4th col.] - lemma
+     [5th col.] - POS tag
+     [6th col.] - chunk tag
+     [7th ... ] - any attributes
 </pre>
-                        <h4>Example</h4>
-                        <pre>
-    $ nersuite_dic_tagger -n cns dictionary.db < source.features.txt > result.features.txt
-                        </pre>
+                    <h4>Example</h4>
+                    <pre>
+$ nersuite_dic_tagger -n cns dictionary.db < source.features.txt > result.features.txt
+                    </pre>
 <p>
 "source.features.txt" should be in the format like the following example:
 </p>
@@ -304,43 +290,12 @@ hydroxyacyl-Coenzyme A dehydrogenase pseudogene&lt;tab&gt;EntrezGene
 82	83	.	.	.	O
 ...
 </pre>
-                    </div>
-                </div>
-            </div>
-            <div id="subcol">
-                <div id="menu">
-                    <div>
-                        &nbsp;
-                    </div>
-                    <div>
-                        &nbsp;
-                    </div>
-                    <div>
-                        &nbsp;
-                    </div>
-                    <div>
-                        &nbsp;
-                    </div>
-                    <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="index.html#News">What's New</a></li>
-                        <li><a href="download.html">Download</a> </li>
-                        <li><a href="installation_guide.html">Installation Guide</a> </li>
-                        <li><a href="basic_usage.html">Basic Usage</a> </li>
-                        <li><a href="advanced_usage.html">Advanced Usage</a> </li>
-                        <li  class="selected"><a href="command_reference.html">Command Reference</a> </li>
-                        <li><a href="faqs.html">FAQs</a> </li>
-                    </ul>
                 </div>
             </div>
         </div>
-        <div id="footer">
-            <div id="footer1">
-                � Tsujii Laboratory, Department of Information Science, The University of Tokyo</div>
-            <div id="footer2">
-                Dept. of Science Bldg. 7, Tokyo University, 7-3-1 Hongo, Bunkyo-ku, 113-0033 Tokyo
-                Japan</div>
+        <div id="subcol">
+          {% include menu.html %}
         </div>
     </div>
-</body>
-</html>
+    {% include ftr.html %}
+</div>
