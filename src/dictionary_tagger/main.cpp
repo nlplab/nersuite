@@ -115,8 +115,6 @@ int main(int argc, char* argv[])
 
 	try
 	{
-		NER::SentenceTagger::set_normalize_type(normalize_type);
-
 		NER::Dictionary dict(args[1]);
 		dict.open();
 
@@ -133,6 +131,7 @@ int main(int argc, char* argv[])
 			std::cerr << "Warning: given normalization (" << normalize_type << ") does not match DB normalization (" << dict.get_normalization_type() << "). Tagging performance may be decreased.\n";
 		}
 		
+		NER::SentenceTagger::set_normalize_type(normalize_type);
 
 		// Tag input with a dictionary
 		NER::SentenceTagger	one_sent;
