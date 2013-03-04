@@ -224,6 +224,11 @@ namespace NER
 
 		// 2. Tag input
 		while (! is.eof() ) {
+		  // 2.0 early exit on EOF (get_sent can't differentiate between no input and empty line)
+			if ( is.peek() == EOF ) {
+				break;
+			}
+
 	    // 2.1. Read a sentence (or comments)
 			get_sent(is, one_sent, multidoc_separator, separator_read);
 
