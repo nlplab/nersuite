@@ -21,6 +21,11 @@ Yoshimasa Tsuruoka for the GENIA tagger
 And other collegues who willingly tested NERsuite and gave comments and advices
 
 
+* Compatibility
+ NERsuite has been built and tested on CentOS.
+ NERsuite may not work on OSX (reported by Florian Leitner).
+
+
 * History
 
 Minor updates (2012.07.06)
