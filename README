@@ -1,11 +1,11 @@
     NERsuite version 1.2.1
 
 
-* About
+## About ##
  NERsuite is a named entity recognition toolkit.
 
 
-* Copyright and license
+## Copyright and license ##
  This toolkit includes and uses a modified version of the GENIA 3.0.1 tagger, and 
 the GENIA tagger uses the information extracted from the WORDNET. The NERsuite also 
 requires the installation of libLBFGS (http://www.chokkan.org/software/liblbfgs/) 
@@ -15,18 +15,30 @@ the use of this toolkit need to follows the copyrights and the license terms of
 these softwares. For other parts of this toolkit, it follows the BSD license.
 
 
-* Thanks to...
+## Thanks to ##
  Naoaki Okazaki for his invaluable help in developing and distributing this toolkit
 Yoshimasa Tsuruoka for the GENIA tagger
 And other collegues who willingly tested NERsuite and gave comments and advices
 
 
-* Compatibility
+## Compatibility ##
  NERsuite has been built and tested on CentOS.
  NERsuite may not work on OSX (reported by Florian Leitner).
 
 
-* History
+## Citing ##
+
+If you do make use of NERsuite or its components please cite as follows:
+
+    @misc{,
+        author       = {Cho, Han-Cheol and Okazaki, Naoaki and Miwa, Makoto 
+                        and Tsujii, Jun'ichi},
+        title        = {NERsuite: a named entity recognition toolkit},
+        howpublished = {https://github.com/nlplab/nersuite},
+    }
+
+
+## History ##
 
 Minor updates (2012.07.06)
   - Bug fix: nersuite_gtagger crashed with segmentation fault when it runs without
