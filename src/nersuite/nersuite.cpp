@@ -115,8 +115,8 @@ namespace NER
 		/* Report the statistics of the training data. */
 		fprintf(fpo, "Number of instances: %d\n", (int) trainer.get_instance_num());
 		fprintf(fpo, "Total number of items: %d\n", (int) trainer.get_item_num());
-		fprintf(fpo, "Number of attributes: %d\n", (int) trainer.get_label_num());
-		fprintf(fpo, "Number of labels: %d\n", (int) trainer.get_attribute_num());
+		fprintf(fpo, "Number of attributes: %d\n", (int) trainer.get_attribute_num());
+		fprintf(fpo, "Number of labels: %d\n", (int) trainer.get_label_num());
 		fprintf(fpo, "Seconds required: %.3f\n", (clk_current - clk_begin) / (double)CLOCKS_PER_SEC);
 		fprintf(fpo, "\n");
 		fflush(fpo);
@@ -138,16 +138,23 @@ namespace NER
 
 	int Suite::tag()
 	{
-		string            m_name = DEFAULT_MODEL_FILE;
+		// 1. Create a tagger with a given model
+		string             m_name = DEFAULT_MODEL_FILE;
+		CRFSuite::Tagger   tagger;
 
 		opt_parser.get_value("-m", m_name);
-		CRFSuite::Tagger  tagger;
 		if (!tagger.open(m_name.c_str())) {
 			cerr << "Cannot create a model instance from " << m_name << endl;
 			return 1;
 		}
 
-		string              opt_value;
+		// 2. Set the label bias parameter
+		string            lbias = "";
+		opt_parser.get_value("-b", lbias);
+		tagger.set_bias(lbias);
+
+		// 3. Tag input
+		string             opt_value;
 		FeatureExtractor   FExtor(COL_INFO);
 
 		if (opt_parser.get_value("-f", opt_value)) {
@@ -210,16 +217,22 @@ namespace NER
 
 		set_column_info(MODE_TAG);
 
-		// check multidoc mode
+		// 1. Option handling: -multidoc mode
 		string multidoc_separator = "";
 		bool multidoc_mode = opt_parser.get_value("-multidoc", multidoc_separator); 
 		bool separator_read;
 
+		// 2. Tag input
 		while (! is.eof() ) {
-	    // 1. Read a sentence (or comments)
+		  // 2.0 early exit on EOF (get_sent can't differentiate between no input and empty line)
+			if ( is.peek() == EOF ) {
+				break;
+			}
+
+	    // 2.1. Read a sentence (or comments)
 			get_sent(is, one_sent, multidoc_separator, separator_read);
 
-			// 2. Pass the input to output, if the multidoc mode is on and the read sentence is lines of comments
+			// 2.2. Pass the input to output, if the multidoc mode is on and the read sentence is lines of comments
 	    if( multidoc_mode && separator_read ) {
 				for( V2_STR::iterator irow = one_sent.begin(); irow != one_sent.end(); ++irow ) {
 					os << irow->front() << endl;
@@ -228,10 +241,10 @@ namespace NER
 				continue;
 			}
 			
-			// 3. Extract features
+			// 2.3. Extract features
 			sent_feats.clear();
 
-			pad_answer(string("tag"), one_sent, sent_feats);            // CRFsuite needs that first columns are answer or dummy tags (in both training and test)
+			pad_answer(string("tag"), one_sent, sent_feats);      // CRFsuite needs that first columns are answer or dummy tags (in both training and test)
 
 			FExtor.ext_WORD_feats(one_sent, sent_feats);
 			FExtor.ext_LEMMA_feats(one_sent, sent_feats);
@@ -240,10 +253,10 @@ namespace NER
 			FExtor.ext_LEMMA_POS_feats(one_sent, sent_feats);
 			FExtor.ext_CHUNK_feats(one_sent, sent_feats);
 
-			// 3.1. Use dictionaries as a default option (the last argument turn on lexicalized dictionary features)
+			// 2.4. Extract dictionary features
 			FExtor.ext_DIC_feats(one_sent, sent_feats, 0);      
 
-			// 4. Tag named entities
+			// 2.5 Tag named entities
 			tag_crfsuite(one_sent, sent_feats, tagger, term_idx, os);
 		}
 
