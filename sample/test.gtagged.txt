@@ -1,0 +1,13 @@
+0	1	5	5	CD	B-NP
+1	2	-	-	HYPH	I-NP
+2	5	LOX	LOX	NN	I-NP
+6	9	and	and	CC	I-NP
+10	11	5	5	CD	I-NP
+11	12	-	-	HYPH	I-NP
+12	15	LOX	LOX	NN	I-NP
+16	26	activating	activate	VBG	B-VP
+27	34	protein	protein	NN	B-NP
+35	36	(	(	(	O
+36	40	FLAP	FLAP	NN	B-NP
+40	41	)	)	)	O
+42	45	are	be	VBP	B-VP

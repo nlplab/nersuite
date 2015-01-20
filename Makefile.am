@@ -11,7 +11,7 @@ SUBDIRS = \
 	src/correct_mp
 
 docdir = $(prefix)/share/doc/@PACKAGE@
-doc_DATA = README INSTALL COPYING AUTHORS ChangeLog
+doc_DATA = README.md INSTALL COPYING AUTHORS ChangeLog
 
 #models_gtaggerdir = $(prefix)/models_gtagger
 #models_gtagger_DATA = \

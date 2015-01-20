@@ -40,6 +40,12 @@ If you do make use of NERsuite or its components please cite as follows:
 
 ## History ##
 
+Minor updates (2015.01.20)
+  - New function: Added the support for CRFsuite label bias arg (by @spyssalo) by
+                  using a customized CRFsuite (https://github.com/priancho/crfsuite).
+                  Use "-b [Label name]:[Bias score],[Label name]:[Bias score],... ".
+
+
 Minor updates (2012.07.06)
   - Bug fix: nersuite_gtagger crashed with segmentation fault when it runs without
               -multidoc argument.
