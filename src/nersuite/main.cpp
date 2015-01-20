@@ -69,7 +69,7 @@ int main(int argc, char* argv[])
 
 void print_usage(char exe_name[])
 {
-	cerr << "Usage: " << exe_name << " <mode> <-m model_filename> [-C C2_value] [-o output_format] [-multidoc SEP] [file(s)]" << endl;
+	cerr << "Usage: " << exe_name << " <mode> <-m model_filename> [-C C2_value] [-b lable_bias] [-o output_format] [-multidoc SEP] [file(s)]" << endl;
 	cerr << "  1. mode " << endl;
 	cerr << "    - 'learn' or 'tag' " << endl;
 	cerr << endl;
@@ -80,15 +80,19 @@ void print_usage(char exe_name[])
 	cerr << "    - The C2 value of the CRFSuite Learning parameter " << endl;
 	cerr << "    - Default value is 1.0 " << endl;
 	cerr << endl;
-	cerr << "  4. output_format  (for tag mode) " << endl;
+	cerr << "  4. label_bias (for tag mode) " << endl;
+	cerr << "    - A comma separated label biases that give base scores (0.0 by default) to specified states (labels)" << endl;
+	cerr << "    - e.g., -b PERSON:0.3,LOCATION:-0.2" << endl;
+	cerr << endl;
+	cerr << "  5. output_format  (for tag mode) " << endl;
 	cerr << "    - 'conll' or 'standoff' or 'brat' format " << endl;
 	cerr << "    - Default value is 'conll' format " << endl;
 	cerr << endl;
-	cerr << "  5. multidoc mode (for tag mode) " << endl;
-	cerr << "     - if -multidoc SEP option is given, looks for lines beginning with the "   << endl;
+	cerr << "  6. multidoc mode (for tag mode) " << endl;
+	cerr << "     - If -multidoc SEP option is given, looks for lines beginning with the "   << endl;
 	cerr << "       separator SEP in the input and echoes the same on output." << endl; 
 	cerr << endl;
-	cerr << "  6. input_file " << endl;
+	cerr << "  7. input_file " << endl;
 	cerr << "    - Input file(s) can be delivered in three ways." << endl;
 	cerr << "      1. re-directed standard input." << endl;
 	cerr << "      2. an input file name with -f option. (e.g. -f input.txt)" << endl;
