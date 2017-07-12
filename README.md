@@ -25,7 +25,7 @@ And other collegues who willingly tested NERsuite and gave comments and advices
  * NERsuite has been built and tested on CentOS.
  * NERsuite needs a modified version of CRFsuite (https://github.com/priancho/crfsuite). 
  The original version is missing label bias functionality and will not work with this version of NERsuite.
- * NERsuite may not work on OSX (see also [#23](/../../issues/23) reported by Florian Leitner).
+ * NERsuite may not work on OSX (see also [#23](https://github.com/nlplab/nersuite/issues/23) reported by Florian Leitner).
 
 
 ## Citing ##
