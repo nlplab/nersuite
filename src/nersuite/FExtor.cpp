@@ -761,7 +761,7 @@ namespace NER
 		}else if (rel_pos < 0) {
 			if (distance(i_row, one_sent.begin()) <= rel_pos)		// begin(), B, (cur), D, E, ... => distance(cur, begin()) = -2
 				ret_word = (*(i_row + rel_pos))[ col ];
-		}else if (rel_pos > 0) {
+		}else {
 			if (distance(i_row, one_sent.end()) > rel_pos  )		// D, E, (cur), G, H, end() => distance(cur, end()) = 3, but only rel_pos = 1 and 2 is accessible
 				ret_word = (*(i_row + rel_pos))[ col ];
 		}

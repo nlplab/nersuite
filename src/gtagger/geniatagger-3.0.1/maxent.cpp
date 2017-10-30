@@ -494,6 +494,7 @@ ME_Model::train(const int cutoff,
     cerr << "number of active features = " << sum << endl;
   }
   
+  return 1;
 }
 
 void

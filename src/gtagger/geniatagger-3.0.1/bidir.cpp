@@ -63,8 +63,6 @@ mesample(const vector<Token> &vt, int i,
     if (str.size() >= j) {
       sprintf(buf, "suf%d_%s", j, str.substr(str.size() - j).c_str());
       sample.features.push_back(buf);
-    }
-    if (str.size() >= j) {
       sprintf(buf, "pre%d_%s", j, str.substr(0, j).c_str());
       sample.features.push_back(buf);
     }
