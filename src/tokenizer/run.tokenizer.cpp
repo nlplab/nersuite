@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
 			string arg = argv[i];
 			if( arg == "--help" ) {
 				cerr << "Usage: " << argv[0] << " < a sentence-per-line file" << endl;
-				return 0;
+				return 1;
 			}
 		}
 	}
@@ -42,7 +42,6 @@ int main(int argc, char* argv[])
 
 	string  line = "";
 	V2_STR  data;
-	int	    n_lines = 1;
 	int     base_offset = 0;
 	bool    prev_comment = false;
 
@@ -92,9 +91,7 @@ int main(int argc, char* argv[])
 			cout << endl;
 		}
 		cout << endl;
-
-		++n_lines;
 	}
 	
-	return n_lines;
+	return 0;
 }
